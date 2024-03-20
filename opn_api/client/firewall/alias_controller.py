@@ -1,5 +1,6 @@
-from opnsense_api.util import AliasType, ProtocolType
-from opnsense_api.util.parse import parse_query_response_alias
+from opn_api.util import AliasType, ProtocolType
+from opn_api.util.parse import parse_query_response_alias
+from opn_api.api.plugin.firewall import FirewallAlias, FirewallAliasUtil
 
 
 class Alias:
@@ -23,7 +24,7 @@ class Alias:
                 raise Exception(f"Failed to parse the alias with UUID: {uuid}\nException: {error.with_traceback()}")
 
     def get_uuid(self, name: str) -> str | None:
-        search_results = self.device._authenticated_request("GET", f"firewall/alias/getAliasUUID/{name}")
+        search_results = self.fa.get_uuid_for_name(name)
         if 'uuid' in search_results:
             return search_results['uuid']
         return None
@@ -62,7 +63,7 @@ class Alias:
                 "enabled": str(int(enabled))
             }
         }
-        return self.device._authenticated_request("POST", f"firewall/alias/addItem", body=request_body)
+        return self.fa.add_item(body=request_body)
 
     def set(self, uuid: str, name: str, alias_type: AliasType, description: str = "", update_freq: str = "",
             counters: str = "", proto: ProtocolType = None, content=None, enabled: bool = True):

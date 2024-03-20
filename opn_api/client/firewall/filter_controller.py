@@ -1,5 +1,6 @@
-from opnsense_api.util.parse import parse_firewall_filter_rule, parse_firewall_filter_search_results
-from opnsense_api.util.validate import validate_add_filter_rule
+from opn_api.util.parse import parse_firewall_filter_rule, parse_firewall_filter_search_results
+from opn_api.util.validate import validate_add_filter_rule
+from opn_api.api.plugin.firewall import FirewallAlias, FirewallAliasUtil
 
 
 class Filter:

@@ -56,7 +56,7 @@ class FirewallAlias(ApiBase):
     Firewall Alias Util
     """
 
-    def add_item(self, *args, json=None):
+    def add_item(self, *args, json):
         self.method = "post"
         self.command = "addItem"
         self.api(*args, json=json)
