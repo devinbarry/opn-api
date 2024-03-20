@@ -56,15 +56,15 @@ class FirewallAlias(ApiBase):
     Firewall Alias Util
     """
 
-    @ApiBase._api_call
     def add_item(self, *args, json=None):
         self.method = "post"
         self.command = "addItem"
+        self.api(*args, json=json)
 
-    @ApiBase._api_call
-    def del_item(self, *args):
+    def del_item(self, uuid):
         self.method = "post"
         self.command = "delItem"
+        return self.api(uuid)
 
     @ApiBase._api_call
     def export(self, *args):
@@ -76,20 +76,20 @@ class FirewallAlias(ApiBase):
         self.method = "get"
         self.command = "get"
 
-    @ApiBase._api_call
-    def get_uuid_for_name(self, *args):
+    def get_uuid_for_name(self, name):
         self.method = "get"
         self.command = "getAliasUUID"
+        return self.api(name)
 
     @ApiBase._api_call
     def get_geo_ip(self, *args):
         self.method = "get"
         self.command = "getGeoIP"
 
-    @ApiBase._api_call
-    def get_item(self, *args):
+    def get_item(self, uuid):
         self.method = "get"
         self.command = "getItem"
+        return self.api(uuid)
 
     @ApiBase._api_call
     def get_table_size(self, *args):
@@ -126,11 +126,9 @@ class FirewallAlias(ApiBase):
         self.method = "post"
         self.command = "reconfigure"
 
-    # Note: For "searchItem" the method and parameters are not specified, adapt accordingly
     @ApiBase._api_call
     def search_item(self, *args, **kwargs):
-        # Method to be determined based on actual implementation
-        # self.method = "get" or "post"
+        self.method = "get"
         self.command = "searchItem"
 
     @ApiBase._api_call

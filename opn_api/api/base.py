@@ -25,6 +25,10 @@ class ApiBase:
     def command(self, value):
         self._command = value
 
+    def api(self, *args, json=None):
+        return self._api_client.execute(*args, module=self.module, controller=self.controller, method=self.method,
+                                        command=self.command, json=json)
+
     def _api_call(api_function):
         def api_response(self, *args, json=None):
             api_function(self)
