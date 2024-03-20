@@ -89,4 +89,7 @@ class Alias:
                 "enabled": str(int(enabled))
             }
         }
-        return self.device._authenticated_request("POST", f"firewall/alias/setItem/{uuid}", body=request_body)
+        return self.fa.set_item(uuid, body=request_body)
+
+    def apply_changes(self):
+        return self.fa.reconfigure()

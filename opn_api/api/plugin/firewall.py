@@ -56,10 +56,10 @@ class FirewallAlias(ApiBase):
     Firewall Alias Util
     """
 
-    def add_item(self, *args, json):
+    def add_item(self, *args, body):
         self.method = "post"
         self.command = "addItem"
-        self.api(*args, json=json)
+        self.api(*args, json=body)
 
     def del_item(self, uuid):
         self.method = "post"
@@ -121,10 +121,10 @@ class FirewallAlias(ApiBase):
         self.method = "get"
         self.command = "listUserGroups"
 
-    @ApiBase._api_call
-    def reconfigure(self, *args):
+    def reconfigure(self):
         self.method = "post"
         self.command = "reconfigure"
+        return self.api()
 
     @ApiBase._api_call
     def search_item(self, *args, **kwargs):
@@ -136,10 +136,10 @@ class FirewallAlias(ApiBase):
         self.method = "post"
         self.command = "set"
 
-    @ApiBase._api_call
-    def set_item(self, *args, json=None):
+    def set_item(self, uuid, body):
         self.method = "post"
         self.command = "setItem"
+        return self.api(uuid, json=body)
 
     @ApiBase._api_call
     def toggle_item(self, *args, json=None):
