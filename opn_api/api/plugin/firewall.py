@@ -59,7 +59,7 @@ class FirewallAlias(ApiBase):
     def add_item(self, *args, body):
         self.method = "post"
         self.command = "addItem"
-        self.api(*args, json=body)
+        return self.api(*args, json=body)
 
     def del_item(self, uuid):
         self.method = "post"
