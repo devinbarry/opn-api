@@ -1,0 +1,39 @@
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[project]
+name = "opn_api"
+requires-python = ">=3.11"
+dynamic = ["version"]
+description = "A Python client library for OPNSense API."
+readme = "README.md"
+license = "BSD-2-Clause"
+authors = [
+    { name = "Devin Barry", email = "devinbarry@users.noreply.github.com" },
+    { name = "Andreas Stürz" },
+]
+keywords = [
+    "OPNSense",
+    "API",
+]
+classifiers = [
+    "Topic :: Software Development :: Libraries :: Python Modules"
+]
+dependencies = [
+    "requests",
+]
+
+[project.urls]
+homepage = "https://github.com/andeman/opnsense_cli"
+repository = "https://github.com/andeman/opnsense_cli"
+documentation = "https://github.com/andeman/opnsense_cli"
+
+[tool.hatch.version]
+path = "src/opn_api/__init__.py"
+
+[tool.hatch.build.targets.sdist]
+packages = ["src/opn_api"]
+
+[tool.hatch.build.targets.wheel]
+packages = ["src/opn_api"]

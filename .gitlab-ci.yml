@@ -1,0 +1,67 @@
+stages:
+  - test
+  - build
+
+test_opn_api:
+  stage: test
+  image: python:3.12
+  tags:
+    - python
+  only:
+    - master
+  before_script:
+    - python --version
+    - pip --version
+  script:
+    - pip install -r requirements.txt
+    # Install opn_api in editable mode
+    - pip install -e .
+    # Run all tests
+    - python -m unittest discover -s opn_api/tests
+
+
+build_and_publish:
+  image: python:3.12
+  stage: build
+  tags:
+    - python
+  rules:
+    # Build on master branch and tags
+    - if: '$CI_COMMIT_REF_NAME == "master" || $CI_COMMIT_TAG'
+      when: on_success
+      exists:
+        - src/opn_api/__init__.py
+  before_script:
+    - apt-get update && apt-get install -y jq
+    # Get the project version from PyPI
+    - export PYPI_PROJECT_VERSION=$(curl $UNOBTAIN_INDEX_URL/pyfsense-client/json | jq -r '.info.version')
+    - echo "PyPI project version - $PYPI_PROJECT_VERSION"
+    # Get the project version from the project source code
+    - export PROJECT_VERSION=$(grep "__version__" src/opn_api/__init__.py | awk -F "[\"']" '{print $2}')
+    - echo "Project version - $PROJECT_VERSION"
+    - |
+      if [ -z "${PROJECT_VERSION}" ]; then
+        echo "ERROR: PROJECT_VERSION is empty"
+        exit 1
+      fi
+    # We should build the project if the source version is different from the PyPI project version
+    - export SHOULD_BUILD=$([ "$PYPI_PROJECT_VERSION" == "$PROJECT_VERSION" ] && echo "false" || echo "true")
+    - echo "Should build - $SHOULD_BUILD"
+  script:
+    # Don't build if the project version is the same as the PyPI project version
+    - |
+      if [ "$SHOULD_BUILD" != "true" ]; then
+        echo "Skipping build as SHOULD_BUILD is not true"
+        exit 0
+      fi
+    - |
+      if [[ -n "$CI_COMMIT_TAG" ]]; then
+        echo "Building on tag - $CI_COMMIT_TAG"
+        # Check that the project version matches the commit tag
+        if [ "$CI_COMMIT_TAG" != "v$PROJECT_VERSION" ]; then exit 1; fi
+      else
+        echo "Building on branch - $CI_COMMIT_REF_NAME"
+      fi
+    - pip install hatch
+    - hatch build
+    - hatch publish --repo $PYPI_REPO_URL --user $PYPI_REPO_USER --auth $PYPI_REPO_AUTH
