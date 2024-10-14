@@ -3,7 +3,7 @@ import json
 from unittest import TestCase
 from unittest.mock import patch
 from opn_api.api.client import ApiClient
-from opn_api.exceptions.api import APIException
+from opn_api.exceptions import APIException
 
 
 class TestApiClient(TestCase):
@@ -27,7 +27,8 @@ class TestApiClient(TestCase):
         result = client.execute(*api_parameters, **api_config)
 
         request_mock.assert_called_once_with(
-            "https://127.0.0.1/api/core/firmware/info", verify="~/.opn-cli/ca.pem", auth=("api_key", "api_secret"), timeout=60
+            "https://127.0.0.1/api/core/firmware/info", verify="~/.opn-cli/ca.pem", auth=("api_key", "api_secret"),
+            timeout=60
         )
         self.assertEqual(api_response_fixture, result)
 
