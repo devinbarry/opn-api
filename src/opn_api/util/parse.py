@@ -1,5 +1,6 @@
 from opn_api.exceptions import ParsingError
 
+
 def parse_query_response_alias(alias):
     name = alias["name"]
     description = alias["description"]

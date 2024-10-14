@@ -11,6 +11,7 @@ readme = "README.md"
 license = "BSD-2-Clause"
 authors = [
     { name = "Devin Barry", email = "devinbarry@users.noreply.github.com" },
+    { name = "Dylan Turnbull", email = "dylanturn@gmail.com" },
     { name = "Andreas Stürz" },
 ]
 keywords = [

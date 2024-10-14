@@ -1,10 +1,7 @@
 # OPN API
 
-A Python client library for OPNSense API.
+A Python client for the OPNSense API.
 
-This library is a fork of opn-cli by Andreas Stürz (https://github.com/andreas-stuerz/opn-cli).
+This library is based on [opn-cli](https://github.com/andreas-stuerz/opn-cli) (v1.7.0) by Andreas Stürz, with additional code from [python-opnsense](https://github.com/turnbros/python-opnsense) by Dylan Turnbull.
 
-I have stripped most of his code out and kept on the API implementation. It has been expanded to support as many API
-functions as possible. The reason I chose his project to fork from the three other OPNSense API projects I could find
-was because the way he designed the API classes to be expandable to any of the possible API calls is great.
-Its super easy to add any other API functions that you might need.
+Most non-essential code from opn-cli has been removed, focusing solely on API implementation. The design makes it easy to expand and add new API functions as needed, ensuring broad support for OPNSense API calls.
