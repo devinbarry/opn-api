@@ -1,3 +1,10 @@
+class ParsingError(Exception):
+    def __init__(self, uuid, element, msg):
+        self.uuid = uuid
+        self.element = element
+        super().__init__(msg)
+
+
 class APIException(Exception):
     def __init__(self, *args, status_code=None, resp_body=None, url=None, **kwargs):
         self.resp_body = resp_body
