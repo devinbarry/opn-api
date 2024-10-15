@@ -8,20 +8,14 @@ class Export(ApiBase):
     Haproxy ExportController
     """
 
-    @ApiBase._api_call
     def config(self, *args):
-        self.method = "get"
-        self.command = "config"
+        return self.api(*args, method="get", command="config")
 
-    @ApiBase._api_call
     def diff(self, *args):
-        self.method = "get"
-        self.command = "diff"
+        return self.api(*args, method="get", command="diff")
 
-    @ApiBase._api_call
     def download(self, *args):
-        self.method = "get"
-        self.command = "download"
+        return self.api(*args, method="get", command="download")
 
 
 class Service(ApiBase):
@@ -31,15 +25,11 @@ class Service(ApiBase):
     Haproxy ServiceController
     """
 
-    @ApiBase._api_call
     def configtest(self, *args):
-        self.method = "get"
-        self.command = "configtest"
+        return self.api(*args, method="get", command="configtest")
 
-    @ApiBase._api_call
     def reconfigure(self, *args):
-        self.method = "post"
-        self.command = "reconfigure"
+        return self.api(*args, method="post", command="reconfigure")
 
 
 class Settings(ApiBase):
@@ -49,217 +39,131 @@ class Settings(ApiBase):
     Haproxy SettingsController
     """
 
-    @ApiBase._api_call
-    def addAcl(self, *args):
-        self.method = "post"
-        self.command = "addAcl"
+    def add_acl(self, *args):
+        return self.api(*args, method="post", command="addAcl")
 
-    @ApiBase._api_call
-    def addAction(self, *args):
-        self.method = "post"
-        self.command = "addAction"
+    def add_action(self, *args):
+        return self.api(*args, method="post", command="addAction")
 
-    @ApiBase._api_call
-    def addBackend(self, *args, json=None):
-        self.method = "post"
-        self.command = "addBackend"
+    def add_backend(self, *args, json=None):
+        return self.api(*args, method="post", command="addBackend", json=json)
 
-    @ApiBase._api_call
-    def addCpu(self, *args):
-        self.method = "post"
-        self.command = "addCpu"
+    def add_cpu(self, *args):
+        return self.api(*args, method="post", command="addCpu")
 
-    @ApiBase._api_call
-    def addErrorfile(self, *args):
-        self.method = "post"
-        self.command = "addErrorfile"
+    def add_errorfile(self, *args):
+        return self.api(*args, method="post", command="addErrorfile")
 
-    @ApiBase._api_call
-    def addFrontend(self, *args, json=None):
-        self.method = "post"
-        self.command = "addFrontend"
+    def add_frontend(self, *args, json=None):
+        return self.api(*args, method="post", command="addFrontend", json=json)
 
-    @ApiBase._api_call
-    def addGroup(self, *args):
-        self.method = "post"
-        self.command = "addGroup"
+    def add_group(self, *args):
+        return self.api(*args, method="post", command="addGroup")
 
-    @ApiBase._api_call
-    def addHealthcheck(self, *args):
-        self.method = "post"
-        self.command = "addHealthcheck"
+    def add_healthcheck(self, *args):
+        return self.api(*args, method="post", command="addHealthcheck")
 
-    @ApiBase._api_call
-    def addLua(self, *args):
-        self.method = "post"
-        self.command = "addLua"
+    def add_lua(self, *args):
+        return self.api(*args, method="post", command="addLua")
 
-    @ApiBase._api_call
-    def addMapfile(self, *args):
-        self.method = "post"
-        self.command = "addMapfile"
+    def add_mapfile(self, *args):
+        return self.api(*args, method="post", command="addMapfile")
 
-    @ApiBase._api_call
-    def addServer(self, *args, json=None):
-        self.method = "post"
-        self.command = "addServer"
+    def add_server(self, *args, json=None):
+        return self.api(*args, method="post", command="addServer", json=json)
 
-    @ApiBase._api_call
-    def addUser(self, *args):
-        self.method = "post"
-        self.command = "addUser"
+    def add_user(self, *args):
+        return self.api(*args, method="post", command="addUser")
 
-    @ApiBase._api_call
-    def addmailer(self, *args):
-        self.method = "post"
-        self.command = "addmailer"
+    def add_mailer(self, *args):
+        return self.api(*args, method="post", command="addmailer")
 
-    @ApiBase._api_call
-    def addresolver(self, *args):
-        self.method = "post"
-        self.command = "addresolver"
+    def add_resolver(self, *args):
+        return self.api(*args, method="post", command="addresolver")
 
-    @ApiBase._api_call
-    def delAcl(self, *args):
-        self.method = "post"
-        self.command = "delAcl"
+    def del_acl(self, *args):
+        return self.api(*args, method="post", command="delAcl")
 
-    @ApiBase._api_call
-    def delAction(self, *args):
-        self.method = "post"
-        self.command = "delAction"
+    def del_action(self, *args):
+        return self.api(*args, method="post", command="delAction")
 
-    @ApiBase._api_call
-    def delBackend(self, *args, json=None):
-        self.method = "post"
-        self.command = "delBackend"
+    def del_backend(self, *args, json=None):
+        return self.api(*args, method="post", command="delBackend", json=json)
 
-    @ApiBase._api_call
-    def delCpu(self, *args):
-        self.method = "post"
-        self.command = "delCpu"
+    def del_cpu(self, *args):
+        return self.api(*args, method="post", command="delCpu")
 
-    @ApiBase._api_call
-    def delErrorfile(self, *args):
-        self.method = "post"
-        self.command = "delErrorfile"
+    def del_errorfile(self, *args):
+        return self.api(*args, method="post", command="delErrorfile")
 
-    @ApiBase._api_call
-    def delFrontend(self, *args, json=None):
-        self.method = "post"
-        self.command = "delFrontend"
+    def del_frontend(self, *args, json=None):
+        return self.api(*args, method="post", command="delFrontend", json=json)
 
-    @ApiBase._api_call
-    def delGroup(self, *args):
-        self.method = "post"
-        self.command = "delGroup"
+    def del_group(self, *args):
+        return self.api(*args, method="post", command="delGroup")
 
-    @ApiBase._api_call
-    def delHealthcheck(self, *args):
-        self.method = "post"
-        self.command = "delHealthcheck"
+    def del_healthcheck(self, *args):
+        return self.api(*args, method="post", command="delHealthcheck")
 
-    @ApiBase._api_call
-    def delLua(self, *args):
-        self.method = "post"
-        self.command = "delLua"
+    def del_lua(self, *args):
+        return self.api(*args, method="post", command="delLua")
 
-    @ApiBase._api_call
-    def delMapfile(self, *args):
-        self.method = "post"
-        self.command = "delMapfile"
+    def del_mapfile(self, *args):
+        return self.api(*args, method="post", command="delMapfile")
 
-    @ApiBase._api_call
-    def delServer(self, *args):
-        self.method = "post"
-        self.command = "delServer"
+    def del_server(self, *args):
+        return self.api(*args, method="post", command="delServer")
 
-    @ApiBase._api_call
-    def delUser(self, *args):
-        self.method = "post"
-        self.command = "delUser"
+    def del_user(self, *args):
+        return self.api(*args, method="post", command="delUser")
 
-    @ApiBase._api_call
-    def delmailer(self, *args):
-        self.method = "post"
-        self.command = "delmailer"
+    def del_mailer(self, *args):
+        return self.api(*args, method="post", command="delmailer")
 
-    @ApiBase._api_call
-    def delresolver(self, *args):
-        self.method = "post"
-        self.command = "delresolver"
+    def del_resolver(self, *args):
+        return self.api(*args, method="post", command="delresolver")
 
-    @ApiBase._api_call
     def get(self, *args):
-        self.method = "get"
-        self.command = "get"
+        return self.api(*args, method="get", command="get")
 
-    @ApiBase._api_call
-    def setAcl(self, *args):
-        self.method = "post"
-        self.command = "setAcl"
+    def set_acl(self, *args):
+        return self.api(*args, method="post", command="setAcl")
 
-    @ApiBase._api_call
-    def setAction(self, *args):
-        self.method = "post"
-        self.command = "setAction"
+    def set_action(self, *args):
+        return self.api(*args, method="post", command="setAction")
 
-    @ApiBase._api_call
-    def setBackend(self, *args, json=None):
-        self.method = "post"
-        self.command = "setBackend"
+    def set_backend(self, *args, json=None):
+        return self.api(*args, method="post", command="setBackend", json=json)
 
-    @ApiBase._api_call
-    def setCpu(self, *args):
-        self.method = "post"
-        self.command = "setCpu"
+    def set_cpu(self, *args):
+        return self.api(*args, method="post", command="setCpu")
 
-    @ApiBase._api_call
-    def setErrorfile(self, *args):
-        self.method = "post"
-        self.command = "setErrorfile"
+    def set_errorfile(self, *args):
+        return self.api(*args, method="post", command="setErrorfile")
 
-    @ApiBase._api_call
-    def setFrontend(self, *args, json=None):
-        self.method = "post"
-        self.command = "setFrontend"
+    def set_frontend(self, *args, json=None):
+        return self.api(*args, method="post", command="setFrontend", json=json)
 
-    @ApiBase._api_call
-    def setGroup(self, *args):
-        self.method = "post"
-        self.command = "setGroup"
+    def set_group(self, *args):
+        return self.api(*args, method="post", command="setGroup")
 
-    @ApiBase._api_call
-    def setHealthcheck(self, *args):
-        self.method = "post"
-        self.command = "setHealthcheck"
+    def set_healthcheck(self, *args):
+        return self.api(*args, method="post", command="setHealthcheck")
 
-    @ApiBase._api_call
-    def setLua(self, *args):
-        self.method = "post"
-        self.command = "setLua"
+    def set_lua(self, *args):
+        return self.api(*args, method="post", command="setLua")
 
-    @ApiBase._api_call
-    def setMapfile(self, *args):
-        self.method = "post"
-        self.command = "setMapfile"
+    def set_mapfile(self, *args):
+        return self.api(*args, method="post", command="setMapfile")
 
-    @ApiBase._api_call
-    def setServer(self, *args, json=None):
-        self.method = "post"
-        self.command = "setServer"
+    def set_server(self, *args, json=None):
+        return self.api(*args, method="post", command="setServer", json=json)
 
-    @ApiBase._api_call
-    def setUser(self, *args):
-        self.method = "post"
-        self.command = "setUser"
+    def set_user(self, *args):
+        return self.api(*args, method="post", command="setUser")
 
-    @ApiBase._api_call
-    def setmailer(self, *args):
-        self.method = "post"
-        self.command = "setmailer"
+    def set_mailer(self, *args):
+        return self.api(*args, method="post", command="setmailer")
 
-    @ApiBase._api_call
-    def setresolver(self, *args):
-        self.method = "post"
-        self.command = "setresolver"
+    def set_resolver(self, *args):
+        return self.api(*args, method="post", command="setresolver")

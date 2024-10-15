@@ -8,7 +8,5 @@ class Backup(ApiBase):
     api-backup BackupController
     """
 
-    @ApiBase._api_call
     def download(self, *args):
-        self.method = "get"
-        self.command = "download"
+        return self.api(*args, method="get", command="download")

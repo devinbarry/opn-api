@@ -8,45 +8,29 @@ class FirewallFilter(ApiBase):
     Firewall Filter (needs plugin: os-firewall)
     """
 
-    @ApiBase._api_call
     def add_rule(self, *args, json=None):
-        self.method = "post"
-        self.command = "addRule"
+        return self.api(*args, method="post", command="addRule", json=json)
 
-    @ApiBase._api_call
     def del_rule(self, *args):
-        self.method = "post"
-        self.command = "delRule"
+        return self.api(*args, method="post", command="delRule")
 
-    @ApiBase._api_call
     def get_rule(self, *args):
-        self.method = "get"
-        self.command = "getRule"
+        return self.api(*args, method="get", command="getRule")
 
-    @ApiBase._api_call
     def set_rule(self, *args):
-        self.method = "post"
-        self.command = "setRule"
+        return self.api(*args, method="post", command="setRule")
 
-    @ApiBase._api_call
     def apply(self, *args):
-        self.method = "post"
-        self.command = "apply"
+        return self.api(*args, method="post", command="apply")
 
-    @ApiBase._api_call
     def savepoint(self, *args):
-        self.method = "post"
-        self.command = "savepoint"
+        return self.api(*args, method="post", command="savepoint")
 
-    @ApiBase._api_call
     def cancel_rollback(self, *args):
-        self.method = "post"
-        self.command = "cancelRollback"
+        return self.api(*args, method="post", command="cancelRollback")
 
-    @ApiBase._api_call
     def get(self, *args):
-        self.method = "get"
-        self.command = "get"
+        return self.api(*args, method="get", command="get")
 
 
 class FirewallAlias(ApiBase):
@@ -57,94 +41,58 @@ class FirewallAlias(ApiBase):
     """
 
     def add_item(self, *args, body):
-        self.method = "post"
-        self.command = "addItem"
-        return self.api(*args, json=body)
+        return self.api(*args, method="post", command="addItem", json=body)
 
     def del_item(self, uuid):
-        self.method = "post"
-        self.command = "delItem"
-        return self.api(uuid)
+        return self.api(uuid, method="post", command="delItem")
 
-    @ApiBase._api_call
     def export(self, *args):
-        self.method = "get"
-        self.command = "export"
+        return self.api(*args, method="get", command="export")
 
-    @ApiBase._api_call
     def get_detail(self, *args):
-        self.method = "get"
-        self.command = "get"
+        return self.api(*args, method="get", command="get")
 
     def get_uuid_for_name(self, name):
-        self.method = "get"
-        self.command = "getAliasUUID"
-        return self.api(name)
+        return self.api(name, method="get", command="getAliasUUID")
 
-    @ApiBase._api_call
     def get_geo_ip(self, *args):
-        self.method = "get"
-        self.command = "getGeoIP"
+        return self.api(*args, method="get", command="getGeoIP")
 
     def get_item(self, uuid):
-        self.method = "get"
-        self.command = "getItem"
-        return self.api(uuid)
+        return self.api(uuid, method="get", command="getItem")
 
-    @ApiBase._api_call
     def get_table_size(self, *args):
-        self.method = "get"
-        self.command = "getTableSize"
+        return self.api(*args, method="get", command="getTableSize")
 
-    @ApiBase._api_call
     def import_(self, *args, json=None):
-        self.method = "post"
-        self.command = "import"
+        return self.api(*args, method="post", command="import", json=json)
 
-    @ApiBase._api_call
     def list_categories(self, *args):
-        self.method = "get"
-        self.command = "listCategories"
+        return self.api(*args, method="get", command="listCategories")
 
-    @ApiBase._api_call
     def list_countries(self, *args):
-        self.method = "get"
-        self.command = "listCountries"
+        return self.api(*args, method="get", command="listCountries")
 
-    @ApiBase._api_call
     def list_network_aliases(self, *args):
-        self.method = "get"
-        self.command = "listNetworkAliases"
+        return self.api(*args, method="get", command="listNetworkAliases")
 
-    @ApiBase._api_call
     def list_user_groups(self, *args):
-        self.method = "get"
-        self.command = "listUserGroups"
+        return self.api(*args, method="get", command="listUserGroups")
 
     def reconfigure(self):
-        self.method = "post"
-        self.command = "reconfigure"
-        return self.api()
+        return self.api(method="post", command="reconfigure")
 
-    @ApiBase._api_call
     def search_item(self, *args, **kwargs):
-        self.method = "get"
-        self.command = "searchItem"
+        return self.api(*args, method="get", command="searchItem", **kwargs)
 
-    @ApiBase._api_call
     def set(self, *args, json=None):
-        self.method = "post"
-        self.command = "set"
+        return self.api(*args, method="post", command="set", json=json)
 
     def set_item(self, uuid, body):
-        self.method = "post"
-        self.command = "setItem"
-        return self.api(uuid, json=body)
+        return self.api(uuid, method="post", command="setItem", json=body)
 
-    @ApiBase._api_call
     def toggle_item(self, *args, json=None):
-        self.method = "post"
-        self.command = "toggleItem"
+        return self.api(*args, method="post", command="toggleItem", json=json)
 
 
 class FirewallAliasUtil(ApiBase):
@@ -154,38 +102,23 @@ class FirewallAliasUtil(ApiBase):
     Firewall Alias Util
     """
 
-    @ApiBase._api_call
     def add(self, *args, json=None):
-        self.method = "post"
-        self.command = "add"
+        return self.api(*args, method="post", command="add", json=json)
 
-    @ApiBase._api_call
     def list_aliases(self, *args):
-        self.method = "get"
-        self.command = "aliases"
+        return self.api(*args, method="get", command="aliases")
 
-    @ApiBase._api_call
     def delete(self, *args, json=None):
-        self.method = "post"
-        self.command = "delete"
+        return self.api(*args, method="post", command="delete", json=json)
 
-    @ApiBase._api_call
     def find_references(self, *args, json=None):
-        self.method = "post"
-        self.command = "findReferences"
+        return self.api(*args, method="post", command="findReferences", json=json)
 
-    @ApiBase._api_call
     def flush(self, *args, json=None):
-        self.method = "post"
-        self.command = "flush"
+        return self.api(*args, method="post", command="flush", json=json)
 
-    @ApiBase._api_call
     def list_alias(self, *args):
-        self.method = "get"
-        self.command = "list"
+        return self.api(*args, method="get", command="list")
 
-    @ApiBase._api_call
     def update_bogons(self, *args):
-        self.method = "get"
-        self.command = "updateBogons"
-
+        return self.api(*args, method="get", command="updateBogons")
