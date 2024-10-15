@@ -2,18 +2,14 @@ from opn_api.api.base import ApiBase
 
 
 class Tunnel(ApiBase):
-    MODULE = "ipsec"
-    CONTROLLER = "tunnel"
     """
     Ipsec TunnelController
     """
+    MODULE = "ipsec"
+    CONTROLLER = "tunnel"
 
-    @ApiBase._api_call
-    def searchPhase1(self, *args):
-        self.method = "get"
-        self.command = "searchPhase1"
+    def search_phase1(self, *args):
+        return self.api(*args, method="get", command="searchPhase1")
 
-    @ApiBase._api_call
-    def searchPhase2(self, *args):
-        self.method = "post"
-        self.command = "searchPhase2"
+    def search_phase2(self, *args):
+        return self.api(*args, method="post", command="searchPhase2")

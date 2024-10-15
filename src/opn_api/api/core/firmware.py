@@ -4,50 +4,27 @@ from opn_api.api.base import ApiBase
 class Firmware(ApiBase):
     MODULE = "Core"
     CONTROLLER = "Firmware"
-    """
-    FIRMWARE
-    """
 
-    @ApiBase._api_call
     def info(self, *args):
-        self.method = "get"
-        self.command = "info"
+        return self.api(*args, method="get", command="info")
 
-    @ApiBase._api_call
-    def upgradestatus(self, *args):
-        self.method = "get"
-        self.command = "upgradestatus"
+    def upgrade_status(self, *args):
+        return self.api(*args, method="get", command="upgradestatus")
 
-    """
-    PACKAGES
-    """
-
-    @ApiBase._api_call
     def install(self, *args):
-        self.method = "post"
-        self.command = "install"
+        return self.api(*args, method="post", command="install")
 
-    @ApiBase._api_call
     def reinstall(self, *args):
-        self.method = "post"
-        self.command = "reinstall"
+        return self.api(*args, method="post", command="reinstall")
 
-    @ApiBase._api_call
     def remove(self, *args):
-        self.method = "post"
-        self.command = "remove"
+        return self.api(*args, method="post", command="remove")
 
-    @ApiBase._api_call
     def lock(self, *args):
-        self.method = "post"
-        self.command = "lock"
+        return self.api(*args, method="post", command="lock")
 
-    @ApiBase._api_call
     def unlock(self, *args):
-        self.method = "post"
-        self.command = "unlock"
+        return self.api(*args, method="post", command="unlock")
 
-    @ApiBase._api_call
     def details(self, *args):
-        self.method = "post"
-        self.command = "details"
+        return self.api(*args, method="post", command="details")

@@ -2,46 +2,34 @@ from opn_api.api.base import ApiBase
 
 
 class Gateway(ApiBase):
-    MODULE = "routes"
-    CONTROLLER = "gateway"
     """
     Routes GatewayController
     """
+    MODULE = "routes"
+    CONTROLLER = "gateway"
 
-    @ApiBase._api_call
     def status(self, *args):
-        self.method = "get"
-        self.command = "status"
+        return self.api(*args, method="get", command="status")
 
 
 class Routes(ApiBase):
-    MODULE = "routes"
-    CONTROLLER = "routes"
     """
     Routes RoutesController
     """
+    MODULE = "routes"
+    CONTROLLER = "routes"
 
-    @ApiBase._api_call
-    def addroute(self, *args):
-        self.method = "post"
-        self.command = "addroute"
+    def add_route(self, *args):
+        return self.api(*args, method="post", command="addroute")
 
-    @ApiBase._api_call
-    def delroute(self, *args):
-        self.method = "post"
-        self.command = "delroute"
+    def del_route(self, *args):
+        return self.api(*args, method="post", command="delroute")
 
-    @ApiBase._api_call
     def get(self, *args):
-        self.method = "get"
-        self.command = "get"
+        return self.api(*args, method="get", command="get")
 
-    @ApiBase._api_call
     def reconfigure(self, *args):
-        self.method = "post"
-        self.command = "reconfigure"
+        return self.api(*args, method="post", command="reconfigure")
 
-    @ApiBase._api_call
-    def setroute(self, *args):
-        self.method = "post"
-        self.command = "setroute"
+    def set_route(self, *args):
+        return self.api(*args, method="post", command="setroute")

@@ -2,71 +2,49 @@ from opn_api.api.base import ApiBase
 
 
 class Service(ApiBase):
-    MODULE = "unbound"
-    CONTROLLER = "service"
     """
     Unbound ServiceController
     """
+    MODULE = "unbound"
+    CONTROLLER = "service"
 
-    @ApiBase._api_call
     def reconfigure(self, *args):
-        self.method = "post"
-        self.command = "reconfigure"
+        return self.api(*args, method="post", command="reconfigure")
 
 
 class Settings(ApiBase):
-    MODULE = "unbound"
-    CONTROLLER = "settings"
     """
     Unbound SettingsController
     """
+    MODULE = "unbound"
+    CONTROLLER = "settings"
 
-    @ApiBase._api_call
-    def addDomainOverride(self, *args):
-        self.method = "post"
-        self.command = "addDomainOverride"
+    def add_domain_override(self, *args):
+        return self.api(*args, method="post", command="addDomainOverride")
 
-    @ApiBase._api_call
-    def addHostAlias(self, *args):
-        self.method = "post"
-        self.command = "addHostAlias"
+    def add_host_alias(self, *args):
+        return self.api(*args, method="post", command="addHostAlias")
 
-    @ApiBase._api_call
-    def addHostOverride(self, *args):
-        self.method = "post"
-        self.command = "addHostOverride"
+    def add_host_override(self, *args):
+        return self.api(*args, method="post", command="addHostOverride")
 
-    @ApiBase._api_call
-    def delDomainOverride(self, *args):
-        self.method = "post"
-        self.command = "delDomainOverride"
+    def del_domain_override(self, *args):
+        return self.api(*args, method="post", command="delDomainOverride")
 
-    @ApiBase._api_call
-    def delHostAlias(self, *args):
-        self.method = "post"
-        self.command = "delHostAlias"
+    def del_host_alias(self, *args):
+        return self.api(*args, method="post", command="delHostAlias")
 
-    @ApiBase._api_call
-    def delHostOverride(self, *args):
-        self.method = "post"
-        self.command = "delHostOverride"
+    def del_host_override(self, *args):
+        return self.api(*args, method="post", command="delHostOverride")
 
-    @ApiBase._api_call
     def get(self, *args):
-        self.method = "get"
-        self.command = "get"
+        return self.api(*args, method="get", command="get")
 
-    @ApiBase._api_call
-    def setDomainOverride(self, *args):
-        self.method = "post"
-        self.command = "setDomainOverride"
+    def set_domain_override(self, *args):
+        return self.api(*args, method="post", command="setDomainOverride")
 
-    @ApiBase._api_call
-    def setHostAlias(self, *args):
-        self.method = "post"
-        self.command = "setHostAlias"
+    def set_host_alias(self, *args):
+        return self.api(*args, method="post", command="setHostAlias")
 
-    @ApiBase._api_call
-    def setHostOverride(self, *args):
-        self.method = "post"
-        self.command = "setHostOverride"
+    def set_host_override(self, *args):
+        return self.api(*args, method="post", command="setHostOverride")

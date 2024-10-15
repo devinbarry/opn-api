@@ -2,46 +2,34 @@ from opn_api.api.base import ApiBase
 
 
 class Service(ApiBase):
-    MODULE = "syslog"
-    CONTROLLER = "service"
     """
     Syslog ServiceController
     """
+    MODULE = "syslog"
+    CONTROLLER = "service"
 
-    @ApiBase._api_call
     def reconfigure(self, *args):
-        self.method = "post"
-        self.command = "reconfigure"
+        return self.api(*args, method="post", command="reconfigure")
 
-    @ApiBase._api_call
     def stats(self, *args):
-        self.method = "get"
-        self.command = "stats"
+        return self.api(*args, method="get", command="stats")
 
 
 class Settings(ApiBase):
-    MODULE = "syslog"
-    CONTROLLER = "settings"
     """
     Syslog SettingsController
     """
+    MODULE = "syslog"
+    CONTROLLER = "settings"
 
-    @ApiBase._api_call
-    def addDestination(self, *args):
-        self.method = "post"
-        self.command = "addDestination"
+    def add_destination(self, *args):
+        return self.api(*args, method="post", command="addDestination")
 
-    @ApiBase._api_call
-    def delDestination(self, *args):
-        self.method = "post"
-        self.command = "delDestination"
+    def del_destination(self, *args):
+        return self.api(*args, method="post", command="delDestination")
 
-    @ApiBase._api_call
     def get(self, *args):
-        self.method = "get"
-        self.command = "get"
+        return self.api(*args, method="get", command="get")
 
-    @ApiBase._api_call
-    def setDestination(self, *args):
-        self.method = "post"
-        self.command = "setDestination"
+    def set_destination(self, *args):
+        return self.api(*args, method="post", command="setDestination")
