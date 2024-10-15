@@ -37,7 +37,7 @@ class FirewallAlias(ApiBase):
     MODULE = "firewall"
     CONTROLLER = "alias"
     """
-    Firewall Alias Util
+    Firewall Alias Controller
     """
 
     def add_item(self, *args, body):
