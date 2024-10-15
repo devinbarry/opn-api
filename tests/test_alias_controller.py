@@ -1,13 +1,13 @@
 import unittest
 from unittest.mock import Mock
 from opn_api.util import AliasType
-from opn_api.client.firewall.alias_controller import Alias
+from opn_api.client.firewall.alias_controller import AliasController
 
 
 class TestAlias(unittest.TestCase):
     def setUp(self):
         self.mock_client = Mock()
-        self.alias = Alias(self.mock_client)
+        self.alias = AliasController(self.mock_client)
 
     def test_list(self):
         mock_response = {'rows': [{'name': 'test_alias'}]}

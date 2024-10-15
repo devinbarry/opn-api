@@ -4,7 +4,7 @@ from opn_api.api.core.firewall import FirewallAlias, FirewallAliasUtil
 from opn_api.exceptions import ParsingError
 
 
-class Alias:
+class AliasController:
     def __init__(self, client):
         self.fa = FirewallAlias(client)
         self.fau = FirewallAliasUtil(client)
@@ -19,7 +19,8 @@ class Alias:
             try:
                 return parse_query_response_alias(query_response['alias'])
             except Exception as error:
-                raise ParsingError(f"Failed to parse the alias with UUID: {uuid}", query_response['alias'], str(error))
+                raise ParsingError(f"Failed to parse the alias with UUID: {uuid}", query_response['alias'],
+                                   str(error))
         raise ValueError(f"No alias found with UUID: {uuid}")
 
     def get_uuid(self, name: str) -> str:
@@ -39,12 +40,14 @@ class Alias:
 
     def add(self, name: str, alias_type: AliasType, description: str = "", update_freq: str = "", counters: str = "",
             proto: ProtocolType = None, content: list = None, enabled: bool = True) -> dict:
-        request_body = self._prepare_alias_body(name, alias_type, description, update_freq, counters, proto, content, enabled)
+        request_body = self._prepare_alias_body(name, alias_type, description, update_freq, counters, proto, content,
+                                                enabled)
         return self.fa.add_item(body=request_body)
 
     def set(self, uuid: str, name: str, alias_type: AliasType, description: str = "", update_freq: str = "",
             counters: str = "", proto: ProtocolType = None, content: list = None, enabled: bool = True) -> dict:
-        request_body = self._prepare_alias_body(name, alias_type, description, update_freq, counters, proto, content, enabled)
+        request_body = self._prepare_alias_body(name, alias_type, description, update_freq, counters, proto, content,
+                                                enabled)
         return self.fa.set_item(uuid, body=request_body)
 
     def apply_changes(self) -> dict:
