@@ -8,15 +8,11 @@ class General(ApiBase):
     Nodeexporter GeneralController
     """
 
-    @ApiBase._api_call
     def get(self, *args):
-        self.method = "get"
-        self.command = "get"
+        return self.api(*args, method="get", command="get")
 
-    @ApiBase._api_call
     def set(self, *args):
-        self.method = "post"
-        self.command = "set"
+        return self.api(*args, method="post", command="set")
 
 
 class Service(ApiBase):
@@ -26,7 +22,5 @@ class Service(ApiBase):
     Nodeexporter ServiceController
     """
 
-    @ApiBase._api_call
     def reconfigure(self, *args):
-        self.method = "post"
-        self.command = "reconfigure"
+        return self.api(*args, method="post", command="reconfigure")

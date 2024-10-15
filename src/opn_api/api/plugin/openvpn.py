@@ -8,22 +8,14 @@ class Openvpn(ApiBase):
     OPENVPN EXPORT
     """
 
-    @ApiBase._api_call
     def accounts(self, *args):
-        self.method = "get"
-        self.command = "accounts"
+        return self.api(*args, method="get", command="accounts")
 
-    @ApiBase._api_call
     def download(self, *args, json=None):
-        self.method = "post"
-        self.command = "download"
+        return self.api(*args, method="post", command="download", json=json)
 
-    @ApiBase._api_call
     def providers(self, *args):
-        self.method = "get"
-        self.command = "providers"
+        return self.api(*args, method="get", command="providers")
 
-    @ApiBase._api_call
     def templates(self, *args):
-        self.method = "get"
-        self.command = "templates"
+        return self.api(*args, method="get", command="templates")
