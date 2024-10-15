@@ -1,19 +1,17 @@
 from opn_api.util import AliasType, ProtocolType
 from opn_api.util.parse import parse_query_response_alias
 from opn_api.api.core.firewall import FirewallAlias, FirewallAliasUtil
+from opn_api.exceptions import ParsingError
 
 
 class Alias:
-
     def __init__(self, client):
         self.fa = FirewallAlias(client)
         self.fau = FirewallAliasUtil(client)
 
     def list(self) -> list:
         search_results = self.fa.search_item()
-        if 'rows' in search_results:
-            return search_results['rows']
-        return []
+        return search_results.get('rows', [])
 
     def get(self, uuid: str) -> dict:
         query_response = self.fa.get_item(uuid)
@@ -21,75 +19,50 @@ class Alias:
             try:
                 return parse_query_response_alias(query_response['alias'])
             except Exception as error:
-                raise Exception(f"Failed to parse the alias with UUID: {uuid}\nException: {error.with_traceback()}")
+                raise ParsingError(f"Failed to parse the alias with UUID: {uuid}", query_response['alias'], str(error))
+        raise ValueError(f"No alias found with UUID: {uuid}")
 
-    def get_uuid(self, name: str) -> str | None:
+    def get_uuid(self, name: str) -> str:
         search_results = self.fa.get_uuid_for_name(name)
         if 'uuid' in search_results:
             return search_results['uuid']
-        return None
+        raise ValueError(f"No alias found with name: {name}")
 
-    def toggle(self, uuid, enabled=None):
+    def toggle(self, uuid: str, enabled: bool = None) -> dict:
         if enabled is None:
-            enabled = bool(int(self.get_alias(uuid)['enabled']))
-        return self.device._authenticated_request("POST", f"firewall/alias/toggleItem/{uuid}?enabled={not enabled}")
+            current_alias = self.get(uuid)
+            enabled = not current_alias['enabled']
+        return self.fa.toggle_item(uuid, json={"enabled": int(enabled)})
 
-    def delete(self, uuid):
-        return self.device._authenticated_request("POST", f"firewall/alias/delItem/{uuid}")
+    def delete(self, uuid: str) -> dict:
+        return self.fa.del_item(uuid)
 
     def add(self, name: str, alias_type: AliasType, description: str = "", update_freq: str = "", counters: str = "",
-            proto: ProtocolType = None, content=None, enabled: bool = True):
-        if content is None:
-            content = []
-
-        protocol_type = ""
-        if proto is not None:
-            protocol_type = proto.value
-
-        alias_content = ""
-        if len(content) > 0:
-            content = [str(item) for item in content]
-            alias_content = "\n".join(content)
-
-        request_body = {
-            "alias": {
-                "name": name,
-                "type": alias_type.value,
-                "description": description,
-                "updatefreq": update_freq,
-                "counters": counters,
-                "proto": protocol_type,
-                "content": alias_content,
-                "enabled": str(int(enabled))
-            }
-        }
+            proto: ProtocolType = None, content: list = None, enabled: bool = True) -> dict:
+        request_body = self._prepare_alias_body(name, alias_type, description, update_freq, counters, proto, content, enabled)
         return self.fa.add_item(body=request_body)
 
     def set(self, uuid: str, name: str, alias_type: AliasType, description: str = "", update_freq: str = "",
-            counters: str = "", proto: ProtocolType = None, content=None, enabled: bool = True):
-        protocol_type = ""
-        if proto is not None:
-            protocol_type = proto.value
+            counters: str = "", proto: ProtocolType = None, content: list = None, enabled: bool = True) -> dict:
+        request_body = self._prepare_alias_body(name, alias_type, description, update_freq, counters, proto, content, enabled)
+        return self.fa.set_item(uuid, body=request_body)
 
-        alias_content = ""
-        if content is not None:
-            if len(content) > 0:
-                content = [str(item) for item in content]
-                alias_content = "\n".join(content)
+    def apply_changes(self) -> dict:
+        return self.fa.reconfigure()
 
-        request_body = {
+    @staticmethod
+    def _prepare_alias_body(name: str, alias_type: AliasType, description: str, update_freq: str, counters: str,
+                            proto: ProtocolType, content: list, enabled: bool) -> dict:
+        alias_content = "\n".join(map(str, content or []))
+        return {
             "alias": {
                 "name": name,
                 "type": alias_type.value,
                 "description": description,
                 "updatefreq": update_freq,
                 "counters": counters,
-                "proto": protocol_type,
+                "proto": proto.value if proto else "",
                 "content": alias_content,
                 "enabled": str(int(enabled))
             }
         }
-        return self.fa.set_item(uuid, body=request_body)
-
-    def apply_changes(self):
-        return self.fa.reconfigure()
