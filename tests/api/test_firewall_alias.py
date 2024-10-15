@@ -2,7 +2,7 @@ import unittest
 from unittest.mock import patch, MagicMock
 from opn_api.api.core.firewall import FirewallAlias
 from opn_api.api.client import ApiClient
-from ..mocks.alias import *
+from tests.mocks.alias import *
 
 
 class TestFirewallAlias(unittest.TestCase):
@@ -31,7 +31,7 @@ class TestFirewallAlias(unittest.TestCase):
         result = self.firewall_alias.get_uuid_for_name(name)
         self.assertEqual(result, mock_get_uuid_for_name_data(name))
         self.mock_client.execute.assert_called_once_with(
-            name, module='firewall', controller='alias', method='get', command='getAliasUUID')
+            name, module='firewall', controller='alias', method='get', command='getAliasUUID', json=None)
 
     @patch('opn_api.api.core.firewall.ApiBase._api_call')
     def test_get_geo_ip(self, mock_api_call):
@@ -46,7 +46,7 @@ class TestFirewallAlias(unittest.TestCase):
         result = self.firewall_alias.get_item(uuid)
         self.assertEqual(result, mock_get_item_data(uuid))
         self.mock_client.execute.assert_called_once_with(
-            uuid, module='firewall', controller='alias', method='get', command='getItem')
+            uuid, module='firewall', controller='alias', method='get', command='getItem', json=None)
 
     @patch('opn_api.api.core.firewall.ApiBase._api_call')
     def test_get_table_size(self, mock_api_call):
@@ -105,7 +105,7 @@ class TestFirewallAlias(unittest.TestCase):
         result = self.firewall_alias.del_item(uuid)
         self.assertEqual(result, mock_del_item_data())
         self.mock_client.execute.assert_called_once_with(
-            uuid, module='firewall', controller='alias', method='post', command='delItem')
+            uuid, module='firewall', controller='alias', method='post', command='delItem', json=None)
 
     @patch('opn_api.api.core.firewall.ApiBase._api_call')
     def test_import(self, mock_api_call):
@@ -120,7 +120,7 @@ class TestFirewallAlias(unittest.TestCase):
         result = self.firewall_alias.reconfigure()
         self.assertEqual(result, mock_reconfigure_data())
         self.mock_client.execute.assert_called_once_with(
-            module='firewall', controller='alias', method='post', command='reconfigure')
+            module='firewall', controller='alias', method='post', command='reconfigure', json=None)
 
     @patch('opn_api.api.core.firewall.ApiBase._api_call')
     def test_set(self, mock_api_call):
@@ -146,4 +146,3 @@ class TestFirewallAlias(unittest.TestCase):
         result = self.firewall_alias.toggle_item(json=json_data)
         self.assertEqual(result, mock_toggle_item_data())
         mock_api_call.assert_called_once()
-
