@@ -150,3 +150,5 @@ cython_debug/
 /.vagrant/
 /output
 
+crev-project.txt
+.crev-config.yaml

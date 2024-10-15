@@ -3,11 +3,11 @@ from opn_api.exceptions import ParsingError
 
 def parse_query_response_alias(alias):
     name = alias["name"]
-    description = alias["description"]
+    description = alias.get("description", "")
     enabled = bool(int(alias['enabled']))
 
-    counters = alias["counters"]
-    updatefreq = alias["updatefreq"]
+    counters = alias.get("counters", "")
+    updatefreq = alias.get("updatefreq", "")
 
     parsed_alias_type = None
     for alias_type in alias["type"].keys():

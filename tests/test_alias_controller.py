@@ -24,19 +24,61 @@ class TestAlias(unittest.TestCase):
         mock_response = {
             'alias': {
                 'name': 'test_alias',
+                'description': 'Test description',
                 'type': {'HOST': {'selected': 1}},
                 'proto': {'TCP': {'selected': 1}},
-                'content': {'192.168.1.1': {'selected': 1}},
+                'content': {
+                    '192.168.1.1': {'selected': 1, 'value': '192.168.1.1'}
+                },
                 'enabled': '1'
             }
         }
         self.alias.fa.get_item = Mock(return_value=mock_response)
         result = self.alias.get('test_uuid')
         self.assertEqual(result['name'], 'test_alias')
+        self.assertEqual(result['description'], 'Test description')
         self.assertEqual(result['type'], 'HOST')
         self.assertEqual(result['proto'], 'TCP')
         self.assertEqual(result['content'], ['192.168.1.1'])
         self.assertTrue(result['enabled'])
+
+    def test_get_missing_description(self):
+        mock_response = {
+            'alias': {
+                'name': 'test_alias',
+                'type': {'HOST': {'selected': 1}},
+                'proto': {'TCP': {'selected': 1}},
+                'content': {
+                    '192.168.1.1': {'selected': 1, 'value': '192.168.1.1'}
+                },
+                'enabled': '1'
+            }
+        }
+        self.alias.fa.get_item = Mock(return_value=mock_response)
+        result = self.alias.get('test_uuid')
+        self.assertEqual(result['name'], 'test_alias')
+        self.assertEqual(result['description'], '')
+        self.assertEqual(result['type'], 'HOST')
+        self.assertEqual(result['proto'], 'TCP')
+        self.assertEqual(result['content'], ['192.168.1.1'])
+        self.assertTrue(result['enabled'])
+
+    def test_get_content_without_value(self):
+        mock_response = {
+            'alias': {
+                'name': 'test_alias',
+                'type': {'HOST': {'selected': 1}},
+                'proto': {'TCP': {'selected': 1}},
+                'content': {
+                    '192.168.1.1': {'selected': 1, 'value': '192.168.1.1'},
+                    '192.168.1.2': {'selected': 1, 'value': '192.168.1.2'}
+                },
+                'enabled': '1'
+            }
+        }
+        self.alias.fa.get_item = Mock(return_value=mock_response)
+        result = self.alias.get('test_uuid')
+        self.assertEqual(result['content'], ['192.168.1.1', '192.168.1.2'])
 
     def test_get_not_found(self):
         self.alias.fa.get_item = Mock(return_value={})
