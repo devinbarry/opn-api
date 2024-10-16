@@ -1,14 +1,14 @@
 import unittest
 from unittest.mock import MagicMock
 from opn_api.api.core.firewall import FirewallAlias
-from opn_api.api.client import ApiClient
+from opn_api.api.client import OPNAPIClient
 from tests.mocks.alias import *
 
 
 class TestFirewallAlias(unittest.TestCase):
 
     def setUp(self):
-        self.mock_client = MagicMock(spec=ApiClient)
+        self.mock_client = MagicMock(spec=OPNAPIClient)
         self.firewall_alias = FirewallAlias(self.mock_client)
 
     def test_export(self):

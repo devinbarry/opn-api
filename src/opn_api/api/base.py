@@ -1,8 +1,8 @@
-from opn_api.api.client import ApiClient
+from opn_api.api.client import OPNAPIClient
 
 
 class ApiBase:
-    def __init__(self, api_client: ApiClient):
+    def __init__(self, api_client: OPNAPIClient):
         self._api_client = api_client
         self.module = self.MODULE
         self.controller = self.CONTROLLER

@@ -2,6 +2,8 @@ import requests
 from urllib3.exceptions import InsecureRequestWarning
 from opn_api.exceptions import APIException
 import json
+from dataclasses import dataclass
+from typing import Optional
 
 # Suppress only the single warning from urllib3 needed.
 requests.packages.urllib3.disable_warnings(category=InsecureRequestWarning)
@@ -9,20 +11,40 @@ requests.packages.urllib3.disable_warnings(category=InsecureRequestWarning)
 HTTP_SUCCESS = (200, 201, 202, 203, 204, 205, 206, 207)
 
 
-class ApiClient:
-    def __init__(self, api_key, api_secret, base_url, ssl_verify_cert, ca, timeout):
-        self._api_key = api_key
-        self._api_secret = api_secret
-        self._base_url = base_url
-        self._ssl_verify_cert = ssl_verify_cert
-        self._timeout = timeout
-        self._ca = ca
+@dataclass
+class OPNSenseClientConfig:
+    """
+    Configuration for OPNSense API client.
+
+    Attributes:
+        api_key (str): API key for authentication.
+        api_secret (str): API secret for authentication.
+        base_url (str): Base URL of the OPNSense API.
+        ssl_verify_cert (bool): Whether to verify SSL certificates. Defaults to True.
+        ca (Optional[str]): Path to CA certificate file. Defaults to None.
+        timeout (int): Timeout for API requests in seconds. Defaults to 60.
+    """
+    api_key: str
+    api_secret: str
+    base_url: str
+    ssl_verify_cert: bool = True
+    ca: Optional[str] = None
+    timeout: int = 60
+
+    def __post_init__(self):
+        if self.ssl_verify_cert and self.ca is None:
+            raise ValueError("CA certificate path must be provided if ssl_verify_cert is True.")
+
+
+class OPNAPIClient:
+    def __init__(self, config: OPNSenseClientConfig):
+        self._config = config
 
     @property
     def ssl_verify_cert(self):
-        if self._ssl_verify_cert:
-            return self._ca
-        return self._ssl_verify_cert
+        if self._config.ssl_verify_cert:
+            return self._config.ca
+        return self._config.ssl_verify_cert
 
     def _process_response(self, response):
         if response.status_code in HTTP_SUCCESS:
@@ -30,7 +52,8 @@ class ApiClient:
         else:
             raise APIException(response=response.status_code, resp_body=response.text, url=response.url)
 
-    def _parse_response(self, response):
+    @staticmethod
+    def _parse_response(response):
         content_type = response.headers.get("content-type").split(";")[0]
 
         if content_type == "application/json":
@@ -38,7 +61,8 @@ class ApiClient:
 
         return response.text
 
-    def _get_endpoint_url(self, *args, **kwargs):
+    @staticmethod
+    def _get_endpoint_url(*args, **kwargs):
         endpoint = f"{kwargs['module']}/{kwargs['controller']}/{kwargs['command']}".lower()
         endpoint_params = "/".join(args)
         if endpoint_params:
@@ -46,16 +70,24 @@ class ApiClient:
         return endpoint
 
     def _get(self, endpoint):
-        req_url = "{}/{}".format(self._base_url, endpoint)
+        req_url = f"{self._config.base_url}/{endpoint}"
         response = requests.get(
-            req_url, verify=self.ssl_verify_cert, auth=(self._api_key, self._api_secret), timeout=self._timeout
+            req_url,
+            verify=self.ssl_verify_cert,
+            auth=(self._config.api_key, self._config.api_secret),
+            timeout=self._config.timeout
         )
         return self._process_response(response)
 
     def _post(self, endpoint, json=None):
-        req_url = "{}/{}".format(self._base_url, endpoint)
-        response = requests.post(req_url, json=json, verify=self.ssl_verify_cert,
-                                 auth=(self._api_key, self._api_secret), timeout=self._timeout)
+        req_url = f"{self._config.base_url}/{endpoint}"
+        response = requests.post(
+            req_url,
+            json=json,
+            verify=self.ssl_verify_cert,
+            auth=(self._config.api_key, self._config.api_secret),
+            timeout=self._config.timeout
+        )
         return self._process_response(response)
 
     def execute(self, *args, json=None, **kwargs):

@@ -2,7 +2,7 @@ import json
 
 from unittest import TestCase
 from unittest.mock import patch
-from opn_api.api.client import ApiClient
+from opn_api.api.client import OPNAPIClient
 from opn_api.exceptions import APIException
 
 
@@ -23,7 +23,7 @@ class TestApiClient(TestCase):
         }
         api_parameters = []
 
-        client = ApiClient(*client_args)
+        client = OPNAPIClient(*client_args)
         result = client.execute(*api_parameters, **api_config)
 
         request_mock.assert_called_once_with(
@@ -52,7 +52,7 @@ class TestApiClient(TestCase):
         }
         api_parameters = []
 
-        client = ApiClient(*client_args)
+        client = OPNAPIClient(*client_args)
         result = client.execute(*api_parameters, **api_config)
 
         request_mock.assert_called_once_with(
@@ -81,7 +81,7 @@ class TestApiClient(TestCase):
         }
         api_parameters = []
 
-        client = ApiClient(*client_args)
+        client = OPNAPIClient(*client_args)
         self.assertRaises(APIException, client.execute, *api_parameters, **api_config)
         request_mock.assert_called_once_with(
             "https://127.0.0.1/api/not/existing/confusion",
@@ -112,7 +112,7 @@ class TestApiClient(TestCase):
             "paramN": "testN",
         }
 
-        client = ApiClient(*client_args)
+        client = OPNAPIClient(*client_args)
         result = client.execute(*api_parameters, json=api_payload, **api_config)
 
         request_mock.assert_called_once_with(
@@ -134,5 +134,5 @@ class TestApiClient(TestCase):
         }
         api_parameters = []
 
-        client = ApiClient(*client_args)
+        client = OPNAPIClient(*client_args)
         self.assertRaises(APIException, client.execute, *api_parameters, **api_config)
