@@ -31,10 +31,6 @@ class OPNSenseClientConfig:
     ca: Optional[str] = None
     timeout: int = 60
 
-    def __post_init__(self):
-        if self.ssl_verify_cert and self.ca is None:
-            raise ValueError("CA certificate path must be provided if ssl_verify_cert is True.")
-
 
 class OPNAPIClient:
     def __init__(self, config: OPNSenseClientConfig):
