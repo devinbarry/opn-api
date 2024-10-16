@@ -51,7 +51,6 @@ class OPNAPIClient:
     @staticmethod
     def _parse_response(response):
         content_type = response.headers.get("content-type").split(";")[0]
-
         if content_type == "application/json":
             return json.loads(response.text)
 

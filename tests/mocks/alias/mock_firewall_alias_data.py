@@ -1,5 +1,10 @@
+import uuid
+
+test_uuid = str(uuid.uuid4())
+
+
 def mock_get_uuid_for_name_data(name):
-    return {'uuid': 'c457be12-c921-486f-81e4-f0d2b3315bf0'}
+    return {'uuid': test_uuid}
 
 
 def mock_get_geo_ip_data():
@@ -43,7 +48,7 @@ def mock_get_table_size_data():
 def mock_list_categories_data():
     return {'rows': [
         {
-            'uuid': 'f04a0dac-798e-48b8-8ff5-3380a25c2e8c',
+            'uuid': test_uuid,
             'name': 'Uptime Kuma',
             'color': '',
             'used': 0

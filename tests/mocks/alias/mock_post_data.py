@@ -1,5 +1,10 @@
+import uuid
+
+test_uuid = str(uuid.uuid4())
+
+
 def mock_add_item_data():
-    return {"status": "success", "uuid": "new_item_uuid"}
+    return {'result': 'saved', 'uuid': str(uuid.uuid4())}
 
 
 def mock_del_item_data():

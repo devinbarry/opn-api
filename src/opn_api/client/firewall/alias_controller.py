@@ -1,6 +1,6 @@
-from opn_api.util import AliasType, ProtocolType
 from opn_api.util.parse import parse_query_response_alias
 from opn_api.api.core.firewall import FirewallAlias, FirewallAliasUtil
+from opn_api.models.firewall_alias import AliasType, ProtocolType
 from opn_api.exceptions import ParsingError
 
 

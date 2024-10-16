@@ -13,7 +13,7 @@ test_opn_api:
     - python --version
     - pip --version
   script:
-    - pip install -r requirements.txt
+    - pip install -r requirements/requirements_dev.txt
     # Install opn_api in editable mode
     - pip install -e .
     # Run all tests
@@ -34,7 +34,7 @@ build_and_publish:
   before_script:
     - apt-get update && apt-get install -y jq
     # Get the project version from PyPI
-    - export PYPI_PROJECT_VERSION=$(curl $UNOBTAIN_INDEX_URL/pyfsense-client/json | jq -r '.info.version')
+    - export PYPI_PROJECT_VERSION=$(curl $UNOBTAIN_INDEX_URL/opn-api/json | jq -r '.info.version')
     - echo "PyPI project version - $PYPI_PROJECT_VERSION"
     # Get the project version from the project source code
     - export PROJECT_VERSION=$(grep "__version__" src/opn_api/__init__.py | awk -F "[\"']" '{print $2}')

@@ -1,6 +1,7 @@
+import uuid
 import unittest
 from unittest.mock import Mock
-from opn_api.util import AliasType
+from opn_api.models.firewall_alias import AliasType
 from opn_api.client.firewall.alias_controller import AliasController
 
 
@@ -110,7 +111,8 @@ class TestAlias(unittest.TestCase):
         self.assertEqual(result, {'result': 'ok'})
 
     def test_add(self):
-        self.alias.fa.add_item = Mock(return_value={'result': 'ok'})
+        response = {'result': 'saved', 'uuid': str(uuid.uuid4())}
+        self.alias.fa.add_item = Mock(return_value=response)
         result = self.alias.add('test_alias', AliasType.HOST, content=['192.168.1.1'])
         self.alias.fa.add_item.assert_called_once()
         self.assertEqual(result, {'result': 'ok'})
