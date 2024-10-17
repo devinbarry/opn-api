@@ -1,6 +1,6 @@
 from enum import Enum
 from typing import Optional
-from pydantic import BaseModel
+from pydantic import BaseModel, Field
 
 
 class AliasType(Enum):
@@ -16,28 +16,38 @@ class ProtocolType(Enum):
 
 
 class FirewallAlias(BaseModel):
-    """validating the firewall alias"""
+    """Base model for firewall alias"""
     name: str
-    alias_type: AliasType
-    content: list[str]
-    description: Optional[str]
-    enabled: bool
-
-
-class FirewallAliasUpdate(FirewallAlias):
-    """validating the firewall alias update"""
-    uuid: str
-    name: str
-    alias_type: AliasType
-    content: list[str]
-    description: Optional[str]
-    enabled: bool
+    type: AliasType
+    description: Optional[str] = ""
+    content: list[str] = Field(default_factory=list)
+    enabled: bool = True
+    update_freq: Optional[str] = ""
+    counters: Optional[str] = ""
+    proto: Optional[ProtocolType] = None
 
 
 class FirewallAliasCreate(FirewallAlias):
-    """validating the firewall alias create"""
-    name: str
-    alias_type: AliasType
-    content: list[str]
-    description: Optional[str]
+    """Model for creating a firewall alias"""
+    pass
+
+
+class FirewallAliasUpdate(FirewallAlias):
+    """Model for updating a firewall alias"""
+    uuid: str
+
+
+class FirewallAliasResponse(FirewallAlias):
+    """Model for firewall alias response"""
+    uuid: str
+
+
+class FirewallAliasToggle(BaseModel):
+    """Model for toggling firewall alias"""
+    uuid: str
     enabled: bool
+
+
+class FirewallAliasDelete(BaseModel):
+    """Model for deleting firewall alias"""
+    uuid: str
