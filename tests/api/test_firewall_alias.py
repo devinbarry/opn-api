@@ -100,11 +100,12 @@ class TestFirewallAlias(unittest.TestCase):
         )
 
     def test_add_item(self):
+        item_data = mock_add_item_data()
         args = ("arg1", "arg2")
         body = {"key": "value"}
-        self.mock_client.execute.return_value = mock_add_item_data()
+        self.mock_client.execute.return_value = item_data
         result = self.firewall_alias.add_item(*args, body=body)
-        self.assertEqual(result, mock_add_item_data())
+        self.assertEqual(result, item_data)
         self.mock_client.execute.assert_called_once_with(
             *args, module='firewall', controller='alias', method='post', command='addItem', json=body)
 

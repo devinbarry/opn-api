@@ -115,7 +115,7 @@ class TestAlias(unittest.TestCase):
         self.alias.fa.add_item = Mock(return_value=response)
         result = self.alias.add('test_alias', AliasType.HOST, content=['192.168.1.1'])
         self.alias.fa.add_item.assert_called_once()
-        self.assertEqual(result, {'result': 'ok'})
+        self.assertEqual(result, response)
 
     def test_set(self):
         self.alias.fa.set_item = Mock(return_value={'result': 'ok'})
