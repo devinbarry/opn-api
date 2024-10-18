@@ -48,7 +48,7 @@ build_and_publish:
     - export SHOULD_BUILD=$([ "$PYPI_PROJECT_VERSION" == "$PROJECT_VERSION" ] && echo "false" || echo "true")
     - echo "Should build - $SHOULD_BUILD"
   script:
-    # Don't build if the project version is the same as the PyPI project version
+    # Don't build if the project version is the same as the PyPI project version. We will get a conflict.
     - |
       if [ "$SHOULD_BUILD" != "true" ]; then
         echo "Skipping build as SHOULD_BUILD is not true"
