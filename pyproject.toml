@@ -8,7 +8,7 @@ requires-python = ">=3.11"
 dynamic = ["version"]
 description = "A Python client library for OPNSense API."
 readme = "README.md"
-license = "BSD-2-Clause"
+license = {file = "LICENSE"}
 authors = [
     { name = "Devin Barry", email = "devinbarry@users.noreply.github.com" },
     { name = "Dylan Turnbull", email = "dylanturn@gmail.com" },
