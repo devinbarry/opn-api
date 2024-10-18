@@ -1,8 +1,22 @@
+from typing import Any
+
 class ParsingError(Exception):
-    def __init__(self, uuid, element, msg):
-        self.uuid = uuid
-        self.element = element
-        super().__init__(msg)
+    """
+    Exception raised for errors in parsing data.
+
+    Attributes:
+        message (str): Explanation of the error.
+        data (Any): The data that caused the error.
+        details (str): Detailed information about the error.
+    """
+    def __init__(self, message: str, data: Any, details: str):
+        self.message = message
+        self.data = data
+        self.details = details
+        super().__init__(f"{message}: {details}")
+
+    def __str__(self):
+        return f"{self.message}: {self.details}"
 
 
 class APIException(Exception):

@@ -11,7 +11,7 @@ from opn_api.models.firewall_alias import (
 from opn_api.client.firewall.alias_controller import AliasController
 
 
-class TestAlias(unittest.TestCase):
+class TestAliasController(unittest.TestCase):
     def setUp(self):
         self.mock_client = Mock()
         self.alias = AliasController(self.mock_client)
