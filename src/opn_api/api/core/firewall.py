@@ -2,11 +2,11 @@ from opn_api.api.base import ApiBase
 
 
 class FirewallFilter(ApiBase):
-    MODULE = "firewall"
-    CONTROLLER = "filter"
     """
     Firewall Filter (needs plugin: os-firewall)
     """
+    MODULE = "firewall"
+    CONTROLLER = "filter"
 
     def add_rule(self, *args, json=None):
         return self.api(*args, method="post", command="addRule", json=json)
@@ -17,8 +17,11 @@ class FirewallFilter(ApiBase):
     def get_rule(self, *args):
         return self.api(*args, method="get", command="getRule")
 
-    def set_rule(self, *args):
-        return self.api(*args, method="post", command="setRule")
+    def set_rule(self, *args, json=None):
+        return self.api(*args, method="post", command="setRule", json=json)
+
+    def toggle_rule(self, *args, json=None):
+        return self.api(*args, method="post", command="toggleRule", json=json)
 
     def apply(self, *args):
         return self.api(*args, method="post", command="apply")
@@ -29,8 +32,8 @@ class FirewallFilter(ApiBase):
     def cancel_rollback(self, *args):
         return self.api(*args, method="post", command="cancelRollback")
 
-    def get(self, *args):
-        return self.api(*args, method="get", command="get")
+    def search_rule(self, *args):
+        return self.api(*args, method="get", command="searchRule")
 
 
 class FirewallAlias(ApiBase):
