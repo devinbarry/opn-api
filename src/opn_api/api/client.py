@@ -74,24 +74,24 @@ class OPNAPIClient:
         )
         return self._process_response(response)
 
-    def _post(self, endpoint, json=None):
+    def _post(self, endpoint, body):
         req_url = f"{self._config.base_url}/{endpoint}"
         response = requests.post(
             req_url,
-            json=json,
+            json=body,
             verify=self.ssl_verify_cert,
             auth=(self._config.api_key, self._config.api_secret),
             timeout=self._config.timeout
         )
         return self._process_response(response)
 
-    def execute(self, *args, json=None, **kwargs):
+    def execute(self, *args, body=None, **kwargs):
         endpoint = self._get_endpoint_url(*args, **kwargs)
         try:
             if kwargs["method"] == "get":
                 return self._get(endpoint)
             elif kwargs["method"] == "post":
-                return self._post(endpoint, json)
+                return self._post(endpoint, body=body)
             else:
                 raise NotImplementedError(f"Unknown HTTP method: {kwargs['method']}")
         except Exception as e:

@@ -45,8 +45,8 @@ class Settings(ApiBase):
     def add_action(self, *args):
         return self.api(*args, method="post", command="addAction")
 
-    def add_backend(self, *args, json=None):
-        return self.api(*args, method="post", command="addBackend", json=json)
+    def add_backend(self, *args, body=None):
+        return self.api(*args, method="post", command="addBackend", body=body)
 
     def add_cpu(self, *args):
         return self.api(*args, method="post", command="addCpu")
@@ -54,8 +54,8 @@ class Settings(ApiBase):
     def add_errorfile(self, *args):
         return self.api(*args, method="post", command="addErrorfile")
 
-    def add_frontend(self, *args, json=None):
-        return self.api(*args, method="post", command="addFrontend", json=json)
+    def add_frontend(self, *args, body=None):
+        return self.api(*args, method="post", command="addFrontend", body=body)
 
     def add_group(self, *args):
         return self.api(*args, method="post", command="addGroup")
@@ -69,8 +69,8 @@ class Settings(ApiBase):
     def add_mapfile(self, *args):
         return self.api(*args, method="post", command="addMapfile")
 
-    def add_server(self, *args, json=None):
-        return self.api(*args, method="post", command="addServer", json=json)
+    def add_server(self, *args, body=None):
+        return self.api(*args, method="post", command="addServer", body=body)
 
     def add_user(self, *args):
         return self.api(*args, method="post", command="addUser")
@@ -87,8 +87,8 @@ class Settings(ApiBase):
     def del_action(self, *args):
         return self.api(*args, method="post", command="delAction")
 
-    def del_backend(self, *args, json=None):
-        return self.api(*args, method="post", command="delBackend", json=json)
+    def del_backend(self, *args, body=None):
+        return self.api(*args, method="post", command="delBackend", body=body)
 
     def del_cpu(self, *args):
         return self.api(*args, method="post", command="delCpu")
@@ -96,8 +96,8 @@ class Settings(ApiBase):
     def del_errorfile(self, *args):
         return self.api(*args, method="post", command="delErrorfile")
 
-    def del_frontend(self, *args, json=None):
-        return self.api(*args, method="post", command="delFrontend", json=json)
+    def del_frontend(self, *args, body=None):
+        return self.api(*args, method="post", command="delFrontend", body=body)
 
     def del_group(self, *args):
         return self.api(*args, method="post", command="delGroup")
@@ -132,8 +132,8 @@ class Settings(ApiBase):
     def set_action(self, *args):
         return self.api(*args, method="post", command="setAction")
 
-    def set_backend(self, *args, json=None):
-        return self.api(*args, method="post", command="setBackend", json=json)
+    def set_backend(self, *args, body=None):
+        return self.api(*args, method="post", command="setBackend", body=body)
 
     def set_cpu(self, *args):
         return self.api(*args, method="post", command="setCpu")
@@ -141,8 +141,8 @@ class Settings(ApiBase):
     def set_errorfile(self, *args):
         return self.api(*args, method="post", command="setErrorfile")
 
-    def set_frontend(self, *args, json=None):
-        return self.api(*args, method="post", command="setFrontend", json=json)
+    def set_frontend(self, *args, body=None):
+        return self.api(*args, method="post", command="setFrontend", body=body)
 
     def set_group(self, *args):
         return self.api(*args, method="post", command="setGroup")
@@ -156,8 +156,8 @@ class Settings(ApiBase):
     def set_mapfile(self, *args):
         return self.api(*args, method="post", command="setMapfile")
 
-    def set_server(self, *args, json=None):
-        return self.api(*args, method="post", command="setServer", json=json)
+    def set_server(self, *args, body=None):
+        return self.api(*args, method="post", command="setServer", body=body)
 
     def set_user(self, *args):
         return self.api(*args, method="post", command="setUser")

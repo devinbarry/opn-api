@@ -7,8 +7,8 @@ class ApiBase:
         self.module = self.MODULE
         self.controller = self.CONTROLLER
 
-    def api(self, *args, method, command, json=None, **kwargs):
+    def api(self, *args, method, command, body=None, **kwargs):
         return self._api_client.execute(
-            *args, module=self.module, controller=self.controller, method=method, command=command, json=json,
+            *args, module=self.module, controller=self.controller, method=method, command=command, body=body,
             **kwargs
         )

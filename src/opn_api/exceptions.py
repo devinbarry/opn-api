@@ -1,5 +1,6 @@
 from typing import Any
 
+
 class ParsingError(Exception):
     """
     Exception raised for errors in parsing data.
