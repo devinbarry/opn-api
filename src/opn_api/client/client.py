@@ -2,7 +2,7 @@ from .firewall.alias_controller import AliasController
 from .firewall.filter_controller import FilterController
 
 
-class Firewall:
+class OPNFirewallClient:
 
     def __init__(self, client):
         self.client = client

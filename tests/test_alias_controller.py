@@ -8,7 +8,7 @@ from opn_api.models.firewall_alias import (
     FirewallAliasUpdate,
     FirewallAliasResponse,
 )
-from opn_api.client.firewall.alias_controller import AliasController
+from opn_api.client.firewall import AliasController
 
 
 class TestAliasController(unittest.TestCase):
