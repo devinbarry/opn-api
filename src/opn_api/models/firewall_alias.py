@@ -8,6 +8,13 @@ class AliasType(Enum):
     NETWORK = "network"
     PORT = "port"
     URL = "url"
+    GEOIP = "geoip"
+    MAC = "mac"
+    ASN = "asn"
+    AUTH_GROUP = "auth_group"
+    DYN_IPV6_HOST = "dynipv6host"
+    INTERNAL = "internal (automatic)"
+    EXTERNAL = "external (advanced)"
 
 
 class ProtocolType(Enum):

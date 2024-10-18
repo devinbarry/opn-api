@@ -49,7 +49,7 @@ class AliasController:
         if enabled is None:
             current_alias = self.get(uuid)
             enabled = not current_alias.enabled
-        return self.fa.toggle_item(uuid, json={"enabled": int(enabled)})
+        return self.fa.toggle_item(uuid, body={"enabled": int(enabled)})
 
     def delete(self, uuid: str) -> dict:
         return self.fa.del_item(uuid)

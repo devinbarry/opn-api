@@ -117,7 +117,7 @@ class TestAliasController(unittest.TestCase):
         self.alias.get = Mock(return_value=alias_response)
         self.alias.fa.toggle_item = Mock(return_value={'result': 'ok'})
         result = self.alias.toggle('test_uuid')
-        self.alias.fa.toggle_item.assert_called_with('test_uuid', json={'enabled': 0})
+        self.alias.fa.toggle_item.assert_called_with('test_uuid', body={'enabled': 0})
         self.assertEqual(result, {'result': 'ok'})
 
     def test_delete(self):
