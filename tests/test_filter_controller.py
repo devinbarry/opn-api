@@ -317,13 +317,13 @@ class TestFilterController(unittest.TestCase):
         ]
 
         rules = self.filter_controller.list_rules()
-        self.filter_controller.ff.search_rule.assert_called_once()
+        self.filter_controller.ff.search_rule.assert_called_once_with(body={})
         self.assertEqual(rules, expected_rules)
 
     def test_list_rules_empty(self):
         self.filter_controller.ff.search_rule.return_value = {'rows': []}
         rules = self.filter_controller.list_rules()
-        self.filter_controller.ff.search_rule.assert_called_once()
+        self.filter_controller.ff.search_rule.assert_called_once_with(body={})
         self.assertEqual(rules, [])
 
     def test_list_rules_parsing_error(self):

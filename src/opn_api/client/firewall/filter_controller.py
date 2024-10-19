@@ -51,7 +51,7 @@ class FilterController:
         return self.ff.cancel_rollback()
 
     def list_rules(self) -> list[FirewallFilterRuleResponse]:
-        response = self.ff.search_rule()
+        response = self.ff.search_rule(body={})
         rows = response.get('rows', [])
         rules = []
         for rule_data in rows:
