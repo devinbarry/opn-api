@@ -13,7 +13,7 @@ class FilterController:
 
     def add_rule(self, rule: FirewallFilterRule) -> dict[str, Any]:
         rule_dict = rule.model_dump(exclude_unset=True)
-        return self.ff.add_rule(json=rule_dict)
+        return self.ff.add_rule(body=rule_dict)
 
     def delete_rule(self, uuid: str) -> dict[str, Any]:
         return self.ff.del_rule(uuid)
@@ -33,13 +33,13 @@ class FilterController:
 
     def set_rule(self, uuid: str, rule: FirewallFilterRule) -> dict[str, Any]:
         rule_dict = rule.model_dump(exclude_unset=True)
-        return self.ff.set_rule(uuid, json=rule_dict)
+        return self.ff.set_rule(uuid, body=rule_dict)
 
     def toggle_rule(self, uuid: str, enabled: Optional[bool] = None) -> dict[str, Any]:
         if enabled is None:
             current_rule = self.get_rule(uuid)
             enabled = not current_rule.enabled
-        return self.ff.toggle_rule(uuid, json={"enabled": int(enabled)})
+        return self.ff.toggle_rule(uuid, body={"enabled": int(enabled)})
 
     def apply_changes(self) -> dict[str, Any]:
         return self.ff.apply()

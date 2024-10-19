@@ -8,32 +8,32 @@ class FirewallFilter(ApiBase):
     MODULE = "firewall"
     CONTROLLER = "filter"
 
-    def add_rule(self, *args, body=None):
-        return self.api(*args, method="post", command="addRule", body=body)
+    def add_rule(self, body=None):
+        return self.api(method="post", command="addRule", body=body)
 
-    def del_rule(self, *args):
-        return self.api(*args, method="post", command="delRule")
+    def del_rule(self, uuid):
+        return self.api(uuid, method="post", command="delRule")
 
-    def get_rule(self, *args):
-        return self.api(*args, method="get", command="getRule")
+    def get_rule(self, uuid):
+        return self.api(uuid, method="get", command="getRule")
 
-    def set_rule(self, *args, body=None):
-        return self.api(*args, method="post", command="setRule", body=body)
+    def set_rule(self, uuid, body=None):
+        return self.api(uuid, method="post", command="setRule", body=body)
 
-    def toggle_rule(self, *args, body=None):
-        return self.api(*args, method="post", command="toggleRule", body=body)
+    def toggle_rule(self, uuid, body=None):
+        return self.api(uuid, method="post", command="toggleRule", body=body)
 
-    def apply(self, *args):
-        return self.api(*args, method="post", command="apply")
+    def apply(self):
+        return self.api(method="post", command="apply")
 
-    def savepoint(self, *args):
-        return self.api(*args, method="post", command="savepoint")
+    def savepoint(self):
+        return self.api(method="post", command="savepoint")
 
-    def cancel_rollback(self, *args):
-        return self.api(*args, method="post", command="cancelRollback")
+    def cancel_rollback(self):
+        return self.api(method="post", command="cancelRollback")
 
-    def search_rule(self, *args):
-        return self.api(*args, method="get", command="searchRule")
+    def search_rule(self, body):
+        return self.api(method="post", command="searchRule", body=body)
 
 
 class FirewallAlias(ApiBase):

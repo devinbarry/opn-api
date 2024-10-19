@@ -42,7 +42,7 @@ class TestFilterController(unittest.TestCase):
 
         response = self.filter_controller.add_rule(rule)
 
-        self.filter_controller.ff.add_rule.assert_called_once_with(json=expected_dict)
+        self.filter_controller.ff.add_rule.assert_called_once_with(body=expected_dict)
         self.assertEqual(response, {'result': 'success'})
 
     def test_delete_rule(self):
@@ -143,7 +143,7 @@ class TestFilterController(unittest.TestCase):
 
         response = self.filter_controller.set_rule("test_uuid", rule)
 
-        self.filter_controller.ff.set_rule.assert_called_once_with("test_uuid", json=expected_dict)
+        self.filter_controller.ff.set_rule.assert_called_once_with("test_uuid", body=expected_dict)
         self.assertEqual(response, {'result': 'updated'})
 
     def test_toggle_rule_enable(self):
@@ -174,7 +174,7 @@ class TestFilterController(unittest.TestCase):
         response = self.filter_controller.toggle_rule("test_uuid")
 
         self.filter_controller.get_rule.assert_called_once_with("test_uuid")
-        self.filter_controller.ff.toggle_rule.assert_called_once_with("test_uuid", json={"enabled": 1})
+        self.filter_controller.ff.toggle_rule.assert_called_once_with("test_uuid", body={"enabled": 1})
         self.assertEqual(response, {'result': 'toggled'})
 
     def test_toggle_rule_disable(self):
@@ -205,7 +205,7 @@ class TestFilterController(unittest.TestCase):
         response = self.filter_controller.toggle_rule("test_uuid")
 
         self.filter_controller.get_rule.assert_called_once_with("test_uuid")
-        self.filter_controller.ff.toggle_rule.assert_called_once_with("test_uuid", json={"enabled": 0})
+        self.filter_controller.ff.toggle_rule.assert_called_once_with("test_uuid", body={"enabled": 0})
         self.assertEqual(response, {'result': 'toggled'})
 
     def test_apply_changes(self):
