@@ -1,9 +1,8 @@
-from enum import Enum
-from typing import Optional
+from enum import StrEnum
 from pydantic import BaseModel, Field
 
 
-class AliasType(Enum):
+class AliasType(StrEnum):
     HOST = "host"
     NETWORK = "network"
     PORT = "port"
@@ -17,7 +16,7 @@ class AliasType(Enum):
     EXTERNAL = "external (advanced)"
 
 
-class ProtocolType(Enum):
+class ProtocolType(StrEnum):
     IPV4 = "IPv4"
     IPV6 = "IPv6"
 
@@ -26,26 +25,38 @@ class FirewallAlias(BaseModel):
     """Base model for firewall alias"""
     name: str
     type: AliasType
-    description: Optional[str] = ""
+    description: str = ""
     content: list[str] = Field(default_factory=list)
     enabled: bool = True
-    update_freq: Optional[str] = ""
-    counters: Optional[str] = ""
-    proto: Optional[ProtocolType] = None
+    update_freq: str = Field(
+        default="",
+        description="Update frequency for dynamic aliases"
+    )
+    counters: str = ""
+    proto: ProtocolType | None = None
 
 
 class FirewallAliasCreate(FirewallAlias):
-    """Model for creating a firewall alias"""
+    """
+    Model for creating a firewall alias.
+    Inherits all fields from FirewallAlias but doesn't require a UUID.
+    """
     pass
 
 
 class FirewallAliasUpdate(FirewallAlias):
-    """Model for updating a firewall alias"""
+    """
+    Model for updating a firewall alias.
+    Inherits all fields from FirewallAlias and requires a UUID.
+    """
     uuid: str
 
 
 class FirewallAliasResponse(FirewallAlias):
-    """Model for firewall alias response"""
+    """
+    Model for firewall alias response.
+    Includes all FirewallAlias fields plus a UUID.
+    """
     uuid: str
 
 

@@ -126,23 +126,11 @@ class AliasController:
 
     @staticmethod
     def _parse_alias_search_item(alias_data: dict) -> FirewallAliasResponse:
-        uuid = alias_data.get("uuid", "")
-        name = alias_data.get("name", "")
-        description = alias_data.get("description", "")
-        enabled = bool(int(alias_data.get("enabled", "1")))
-        content = alias_data.get("content", "")
-        content_list = content.split('\n') if content else []
-        alias_type_str = alias_data.get("type", "")
-        alias_type = AliasType(alias_type_str.lower().replace('(s)', '').strip())
+        if "type" in alias_data:
+            alias_data["type"] = AliasType(alias_data["type"].lower().replace('(s)', '').strip())
+        if "enabled" in alias_data:
+            alias_data["enabled"] = bool(int(alias_data["enabled"]))
+        if "content" in alias_data:
+            alias_data["content"] = alias_data["content"].split('\n') if alias_data["content"] else []
 
-        return FirewallAliasResponse(
-            uuid=uuid,
-            name=name,
-            type=alias_type,
-            description=description,
-            update_freq=None,
-            counters=None,
-            proto=None,
-            content=content_list,
-            enabled=enabled,
-        )
+        return FirewallAliasResponse.model_validate({**alias_data})
