@@ -3,7 +3,6 @@ from urllib3.exceptions import InsecureRequestWarning
 from opn_api.exceptions import APIException
 import json
 from dataclasses import dataclass
-from typing import Optional
 
 # Suppress only the single warning from urllib3 needed.
 requests.packages.urllib3.disable_warnings(category=InsecureRequestWarning)
@@ -12,14 +11,14 @@ HTTP_SUCCESS = (200, 201, 202, 203, 204, 205, 206, 207)
 
 
 @dataclass
-class OPNSenseClientConfig:
+class OPNsenseClientConfig:
     """
-    Configuration for OPNSense API client.
+    Configuration for OPNsense API client.
 
     Attributes:
         api_key (str): API key for authentication.
         api_secret (str): API secret for authentication.
-        base_url (str): Base URL of the OPNSense API.
+        base_url (str): Base URL of the OPNsense API.
         ssl_verify_cert (bool): Whether to verify SSL certificates. Defaults to True.
         ca (Optional[str]): Path to CA certificate file. Defaults to None.
         timeout (int): Timeout for API requests in seconds. Defaults to 60.
@@ -28,12 +27,12 @@ class OPNSenseClientConfig:
     api_secret: str
     base_url: str
     ssl_verify_cert: bool = True
-    ca: Optional[str] = None
+    ca: str | None = None
     timeout: int = 60
 
 
 class OPNAPIClient:
-    def __init__(self, config: OPNSenseClientConfig):
+    def __init__(self, config: OPNsenseClientConfig):
         self._config = config
 
     @property

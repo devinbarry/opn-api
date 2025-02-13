@@ -1,13 +1,13 @@
 import json
 from unittest import TestCase
 from unittest.mock import patch
-from opn_api.api.client import OPNAPIClient, OPNSenseClientConfig
+from opn_api.api.client import OPNAPIClient, OPNsenseClientConfig
 from opn_api.exceptions import APIException
 
 
 class TestApiClient(TestCase):
     def create_client_config(self, api_key, api_secret, base_url, ssl_verify_cert, ca, timeout):
-        return OPNSenseClientConfig(
+        return OPNsenseClientConfig(
             api_key=api_key,
             api_secret=api_secret,
             base_url=base_url,

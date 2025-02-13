@@ -1,5 +1,4 @@
 from enum import Enum
-from typing import Optional
 from pydantic import BaseModel
 
 
@@ -37,12 +36,12 @@ class FirewallFilterRule(BaseModel):
     protocol: Protocol
     source_net: str
     source_not: bool = False
-    source_port: Optional[str] = None
+    source_port: str | None = None
     destination_net: str
     destination_not: bool = False
-    destination_port: Optional[str] = None
-    gateway: Optional[str] = None
-    description: Optional[str] = None
+    destination_port: str | None = None
+    gateway: str | None = None
+    description: str | None = None
     enabled: bool = True
     log: bool = False
 

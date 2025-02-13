@@ -6,7 +6,7 @@ build-backend = "hatchling.build"
 name = "opn_api"
 requires-python = ">=3.11"
 dynamic = ["version"]
-description = "A Python client library for OPNSense API."
+description = "A Python client library for OPNsense API."
 readme = "README.md"
 license = {file = "LICENSE"}
 authors = [
@@ -15,7 +15,7 @@ authors = [
     { name = "Andreas Stürz" },
 ]
 keywords = [
-    "OPNSense",
+    "OPNsense",
     "API",
 ]
 classifiers = [
