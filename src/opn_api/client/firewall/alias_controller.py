@@ -30,9 +30,7 @@ class AliasController:
         if 'alias' in query_response:
             try:
                 alias_data = query_response['alias']
-                model_data = self._transform_alias_response(alias_data)
-                alias = FirewallAliasResponse(uuid=uuid, **model_data)
-                return alias
+                return self._transform_alias_response(uuid, alias_data)
             except Exception as error:
                 raise ParsingError(
                     f"Failed to parse the alias with UUID: {uuid}", query_response['alias'], str(error)
@@ -82,47 +80,41 @@ class AliasController:
         }
 
     @staticmethod
-    def _transform_alias_response(alias_data: dict) -> dict:
-        name = alias_data.get("name", "")
-        description = alias_data.get("description", "")
-        enabled = bool(int(alias_data.get('enabled', '1')))
+    def _transform_alias_response(uuid: str, alias_data: dict) -> FirewallAliasResponse:
+        # Prepare the model data
+        model_data = {
+            "uuid": uuid,
+            "name": alias_data.get("name"),
+            "description": alias_data.get("description", ""),
+            "enabled": bool(int(alias_data.get('enabled', '1'))),
+            "update_freq": alias_data.get("updatefreq", ""),
+            "counters": alias_data.get("counters", ""),
+        }
 
-        counters = alias_data.get("counters", "")
-        updatefreq = alias_data.get("updatefreq", "")
-
-        # Get 'type' field
-        alias_type = None
+        # Extract type
         type_dict = alias_data.get("type", {})
         for key, value in type_dict.items():
             if value.get("selected") == 1:
-                alias_type = AliasType(key.lower())
+                model_data["type"] = AliasType(key.lower())
                 break
 
-        # Get 'proto' field
-        proto = None
+        # Extract protocol
         proto_dict = alias_data.get("proto", {})
         for key, value in proto_dict.items():
             if value.get("selected") == 1:
-                proto = ProtocolType(key)
+                model_data["proto"] = ProtocolType(key)
                 break
 
-        # Get 'content' field
+        # Extract content
         content_list = []
         content_dict = alias_data.get("content", {})
         for key, value in content_dict.items():
             if value.get("selected") == 1:
                 content_list.append(value.get("value"))
+        model_data["content"] = content_list
 
-        return {
-            "name": name,
-            "type": alias_type,
-            "description": description,
-            "update_freq": updatefreq,
-            "counters": counters,
-            "proto": proto,
-            "content": content_list,
-            "enabled": enabled,
-        }
+        # Validate and return the model
+        return FirewallAliasResponse.model_validate(model_data)
 
     @staticmethod
     def _parse_alias_search_item(alias_data: dict) -> FirewallAliasResponse:
