@@ -1,35 +1,6 @@
 from opn_api.exceptions import ParsingError
 
 
-def parse_query_response_alias(alias):
-    name = alias["name"]
-    description = alias.get("description", "")
-    enabled = bool(int(alias['enabled']))
-
-    counters = alias.get("counters", "")
-    updatefreq = alias.get("updatefreq", "")
-
-    parsed_alias_type = None
-    for alias_type in alias["type"].keys():
-        if alias["type"][alias_type]["selected"] == 1:
-            parsed_alias_type = alias_type.upper()
-            break
-
-    parsed_alias_proto = None
-    for alias_proto in alias["proto"].keys():
-        if alias["proto"][alias_proto]["selected"] == 1:
-            parsed_alias_proto = alias_proto.upper()
-            break
-
-    parsed_alias_content = []
-    for alias_content in alias["content"].keys():
-        if alias["content"][alias_content]["selected"] == 1:
-            parsed_alias_content.append(alias["content"][alias_content]["value"])
-
-    return {"name": name, "type": parsed_alias_type, "description": description, "updatefreq": updatefreq,
-            "counters": counters, "proto": parsed_alias_proto, "content": parsed_alias_content, "enabled": enabled}
-
-
 def parse_firewall_filter_search_results(search_results):
     for found_rule in search_results:
         try:
