@@ -5,6 +5,7 @@ class Service(ApiBase):
     """
     Unbound ServiceController
     """
+
     MODULE = "unbound"
     CONTROLLER = "service"
 
@@ -16,6 +17,7 @@ class Settings(ApiBase):
     """
     Unbound SettingsController
     """
+
     MODULE = "unbound"
     CONTROLLER = "settings"
 

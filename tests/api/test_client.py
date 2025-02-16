@@ -13,7 +13,7 @@ class TestApiClient(TestCase):
             base_url=base_url,
             ssl_verify_cert=ssl_verify_cert,
             ca=ca,
-            timeout=timeout
+            timeout=timeout,
         )
 
     @patch("opn_api.api.client.requests.get")
@@ -23,8 +23,9 @@ class TestApiClient(TestCase):
         request_mock.return_value.headers = {"content-type": "application/json; charset=UTF-8"}
         request_mock.return_value.text = json.dumps(api_response_fixture)
 
-        config = self.create_client_config("api_key", "api_secret", "https://127.0.0.1/api",
-                                           True, "~/.opn-cli/ca.pem", 60)
+        config = self.create_client_config(
+            "api_key", "api_secret", "https://127.0.0.1/api", True, "~/.opn-cli/ca.pem", 60
+        )
         api_config = {
             "module": "Core",
             "controller": "firmware",
@@ -37,8 +38,10 @@ class TestApiClient(TestCase):
         result = client.execute(*api_parameters, **api_config)
 
         request_mock.assert_called_once_with(
-            "https://127.0.0.1/api/core/firmware/info", verify="~/.opn-cli/ca.pem", auth=("api_key", "api_secret"),
-            timeout=60
+            "https://127.0.0.1/api/core/firmware/info",
+            verify="~/.opn-cli/ca.pem",
+            auth=("api_key", "api_secret"),
+            timeout=60,
         )
         self.assertEqual(api_response_fixture, result)
 
@@ -53,8 +56,9 @@ class TestApiClient(TestCase):
         request_mock.return_value.headers = {"content-type": "application/octet-stream"}
         request_mock.return_value.text = api_response_fixture
 
-        config = self.create_client_config("api_key", "api_secret", "https://127.0.0.1/api",
-                                           True, "~/.opn-cli/ca.pem", 60)
+        config = self.create_client_config(
+            "api_key", "api_secret", "https://127.0.0.1/api", True, "~/.opn-cli/ca.pem", 60
+        )
         api_config = {
             "module": "Core",
             "controller": "backup",
@@ -83,8 +87,9 @@ class TestApiClient(TestCase):
         }
         request_mock.return_value.url = "https://127.0.0.1/api/not/existing/confusion"
 
-        config = self.create_client_config("api_key", "api_secret", "https://127.0.0.1/api",
-                                           True, "~/.opn-cli/ca.pem", 60)
+        config = self.create_client_config(
+            "api_key", "api_secret", "https://127.0.0.1/api", True, "~/.opn-cli/ca.pem", 60
+        )
         api_config = {
             "module": "Not",
             "controller": "Existing",
@@ -109,8 +114,9 @@ class TestApiClient(TestCase):
         request_mock.return_value.status_code = 200
         request_mock.return_value.text = json.dumps(api_response_fixture)
 
-        config = self.create_client_config("api_key2", "api_secret2", "https://127.0.0.1/api",
-                                           False, "~/.opn-cli/ca.pem", 40)
+        config = self.create_client_config(
+            "api_key2", "api_secret2", "https://127.0.0.1/api", False, "~/.opn-cli/ca.pem", 40
+        )
         api_config = {
             "module": "openvpn",
             "controller": "export",
@@ -138,8 +144,9 @@ class TestApiClient(TestCase):
         self.assertEqual(api_response_fixture, result)
 
     def test_execute_failure(self):
-        config = self.create_client_config("api_key3", "api_secret3", "https://127.0.0.1/api",
-                                           False, "~/.opn-cli/ca.pem", 10)
+        config = self.create_client_config(
+            "api_key3", "api_secret3", "https://127.0.0.1/api", False, "~/.opn-cli/ca.pem", 10
+        )
         api_config = {
             "module": "Core",
             "controller": "Firmware",

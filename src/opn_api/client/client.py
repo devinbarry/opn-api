@@ -3,7 +3,6 @@ from .firewall.filter_controller import FilterController
 
 
 class OPNFirewallClient:
-
     def __init__(self, client):
         self.client = client
         self._alias = AliasController(self.client)

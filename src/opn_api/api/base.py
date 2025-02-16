@@ -9,6 +9,5 @@ class ApiBase:
 
     def api(self, *args, method, command, body=None, **kwargs):
         return self._api_client.execute(
-            *args, module=self.module, controller=self.controller, method=method, command=command, body=body,
-            **kwargs
+            *args, module=self.module, controller=self.controller, method=method, command=command, body=body, **kwargs
         )

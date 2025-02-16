@@ -5,6 +5,7 @@ class Tunnel(ApiBase):
     """
     Ipsec TunnelController
     """
+
     MODULE = "ipsec"
     CONTROLLER = "tunnel"
 

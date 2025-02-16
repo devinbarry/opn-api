@@ -5,6 +5,7 @@ class Service(ApiBase):
     """
     Syslog ServiceController
     """
+
     MODULE = "syslog"
     CONTROLLER = "service"
 
@@ -19,6 +20,7 @@ class Settings(ApiBase):
     """
     Syslog SettingsController
     """
+
     MODULE = "syslog"
     CONTROLLER = "settings"
 

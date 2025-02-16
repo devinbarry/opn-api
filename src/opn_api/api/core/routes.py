@@ -5,6 +5,7 @@ class Gateway(ApiBase):
     """
     Routes GatewayController
     """
+
     MODULE = "routes"
     CONTROLLER = "gateway"
 
@@ -16,6 +17,7 @@ class Routes(ApiBase):
     """
     Routes RoutesController
     """
+
     MODULE = "routes"
     CONTROLLER = "routes"
 

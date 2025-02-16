@@ -17,7 +17,7 @@ class AliasController:
     def list(self) -> list[FirewallAliasResponse]:
         search_results = self.fa.search_item()
         aliases = []
-        for alias_data in search_results.get('rows', []):
+        for alias_data in search_results.get("rows", []):
             try:
                 alias = self._parse_alias_search_item(alias_data)
                 aliases.append(alias)
@@ -27,20 +27,18 @@ class AliasController:
 
     def get(self, uuid: str) -> FirewallAliasResponse:
         query_response = self.fa.get_item(uuid)
-        if 'alias' in query_response:
+        if "alias" in query_response:
             try:
-                alias_data = query_response['alias']
+                alias_data = query_response["alias"]
                 return self._transform_alias_response(uuid, alias_data)
             except Exception as error:
-                raise ParsingError(
-                    f"Failed to parse the alias with UUID: {uuid}", query_response['alias'], str(error)
-                )
+                raise ParsingError(f"Failed to parse the alias with UUID: {uuid}", query_response["alias"], str(error))
         raise ValueError(f"No alias found with UUID: {uuid}")
 
     def get_uuid(self, name: str) -> str:
         search_results = self.fa.get_uuid_for_name(name)
-        if 'uuid' in search_results:
-            return search_results['uuid']
+        if "uuid" in search_results:
+            return search_results["uuid"]
         raise ValueError(f"No alias found with name: {name}")
 
     def toggle(self, uuid: str, enabled: bool = None) -> dict:
@@ -86,7 +84,7 @@ class AliasController:
             "uuid": uuid,
             "name": alias_data.get("name"),
             "description": alias_data.get("description", ""),
-            "enabled": bool(int(alias_data.get('enabled', '1'))),
+            "enabled": bool(int(alias_data.get("enabled", "1"))),
             "update_freq": alias_data.get("updatefreq", ""),
             "counters": alias_data.get("counters", ""),
         }
@@ -119,10 +117,10 @@ class AliasController:
     @staticmethod
     def _parse_alias_search_item(alias_data: dict) -> FirewallAliasResponse:
         if "type" in alias_data:
-            alias_data["type"] = AliasType(alias_data["type"].lower().replace('(s)', '').strip())
+            alias_data["type"] = AliasType(alias_data["type"].lower().replace("(s)", "").strip())
         if "enabled" in alias_data:
             alias_data["enabled"] = bool(int(alias_data["enabled"]))
         if "content" in alias_data:
-            alias_data["content"] = alias_data["content"].split('\n') if alias_data["content"] else []
+            alias_data["content"] = alias_data["content"].split("\n") if alias_data["content"] else []
 
         return FirewallAliasResponse.model_validate({**alias_data})

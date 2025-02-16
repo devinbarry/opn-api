@@ -12,8 +12,10 @@ class TestOPNFirewallClient(unittest.TestCase):
 
     def test_initialization(self):
         # Verify that AliasController and FilterController are instantiated with the mock client
-        with (patch('opn_api.client.client.AliasController') as MockAliasController,
-              patch('opn_api.client.client.FilterController') as MockFilterController):
+        with (
+            patch("opn_api.client.client.AliasController") as MockAliasController,
+            patch("opn_api.client.client.FilterController") as MockFilterController,
+        ):
             OPNFirewallClient(self.mock_client)
 
             MockAliasController.assert_called_once_with(self.mock_client)

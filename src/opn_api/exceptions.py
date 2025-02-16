@@ -10,6 +10,7 @@ class ParsingError(Exception):
         data (Any): The data that caused the error.
         details (str): Detailed information about the error.
     """
+
     def __init__(self, message: str, data: Any, details: str):
         self.message = message
         self.data = data

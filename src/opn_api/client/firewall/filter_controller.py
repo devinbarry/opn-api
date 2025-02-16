@@ -20,15 +20,13 @@ class FilterController:
 
     def get_rule(self, uuid: str) -> FirewallFilterRuleResponse:
         response = self.ff.get_rule(uuid)
-        rule_data = response.get('rule')
+        rule_data = response.get("rule")
         if rule_data:
             try:
                 model_data = self._transform_rule_response(rule_data)
                 return FirewallFilterRuleResponse(uuid=uuid, **model_data)
             except Exception as error:
-                raise ParsingError(
-                    f"Failed to parse the rule with UUID: {uuid}", rule_data, str(error)
-                ) from error
+                raise ParsingError(f"Failed to parse the rule with UUID: {uuid}", rule_data, str(error)) from error
         raise ValueError(f"No rule found with UUID: {uuid}")
 
     def set_rule(self, uuid: str, rule: FirewallFilterRule) -> dict[str, Any]:
@@ -52,7 +50,7 @@ class FilterController:
 
     def list_rules(self) -> list[FirewallFilterRuleResponse]:
         response = self.ff.search_rule(body={})
-        rows = response.get('rows', [])
+        rows = response.get("rows", [])
         rules = []
         for rule_data in rows:
             try:

@@ -23,6 +23,7 @@ class OPNsenseClientConfig:
         ca (Optional[str]): Path to CA certificate file. Defaults to None.
         timeout (int): Timeout for API requests in seconds. Defaults to 60.
     """
+
     api_key: str
     api_secret: str
     base_url: str
@@ -69,7 +70,7 @@ class OPNAPIClient:
             req_url,
             verify=self.ssl_verify_cert,
             auth=(self._config.api_key, self._config.api_secret),
-            timeout=self._config.timeout
+            timeout=self._config.timeout,
         )
         return self._process_response(response)
 
@@ -80,7 +81,7 @@ class OPNAPIClient:
             json=body,
             verify=self.ssl_verify_cert,
             auth=(self._config.api_key, self._config.api_secret),
-            timeout=self._config.timeout
+            timeout=self._config.timeout,
         )
         return self._process_response(response)
 

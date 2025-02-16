@@ -5,6 +5,7 @@ class FirewallFilter(ApiBase):
     """
     Firewall Filter (needs plugin: os-firewall)
     """
+
     MODULE = "firewall"
     CONTROLLER = "filter"
 

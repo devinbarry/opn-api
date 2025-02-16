@@ -23,12 +23,7 @@ class TestAliasControllerParseMethod(unittest.TestCase):
 
         for input_type, expected_type in test_cases:
             with self.subTest(input_type=input_type):
-                alias_data = {
-                    "uuid": "test_uuid",
-                    "name": "test_alias",
-                    "type": input_type,
-                    "enabled": "1"
-                }
+                alias_data = {"uuid": "test_uuid", "name": "test_alias", "type": input_type, "enabled": "1"}
                 result = self.alias._parse_alias_search_item(alias_data)
                 self.assertEqual(result.type, expected_type)
 
@@ -43,12 +38,7 @@ class TestAliasControllerParseMethod(unittest.TestCase):
 
         for input_enabled, expected_enabled in test_cases:
             with self.subTest(input_enabled=input_enabled):
-                alias_data = {
-                    "uuid": "test_uuid",
-                    "name": "test_alias",
-                    "type": "host",
-                    "enabled": input_enabled
-                }
+                alias_data = {"uuid": "test_uuid", "name": "test_alias", "type": "host", "enabled": input_enabled}
                 result = self.alias._parse_alias_search_item(alias_data)
                 self.assertEqual(result.enabled, expected_enabled)
 
@@ -72,7 +62,7 @@ class TestAliasControllerParseMethod(unittest.TestCase):
                     "name": "test_alias",
                     "type": "host",
                     "enabled": "1",
-                    "content": input_content
+                    "content": input_content,
                 }
                 result = self.alias._parse_alias_search_item(alias_data)
                 self.assertEqual(result.content, expected_content)
@@ -87,7 +77,7 @@ class TestAliasControllerParseMethod(unittest.TestCase):
             "description": "Test description",
             "update_freq": "30",
             "counters": "enable",
-            "proto": "IPv4"
+            "proto": "IPv4",
         }
         result = self.alias._parse_alias_search_item(full_alias_data)
         self.assertEqual(result.description, "Test description")
@@ -95,12 +85,7 @@ class TestAliasControllerParseMethod(unittest.TestCase):
         self.assertEqual(result.counters, "enable")
 
         # Test with minimal required fields
-        minimal_alias_data = {
-            "uuid": "test_uuid",
-            "name": "test_alias",
-            "type": "host",
-            "enabled": "1"
-        }
+        minimal_alias_data = {"uuid": "test_uuid", "name": "test_alias", "type": "host", "enabled": "1"}
         result = self.alias._parse_alias_search_item(minimal_alias_data)
         self.assertEqual(result.description, "")
         self.assertEqual(result.update_freq, "")
@@ -110,56 +95,26 @@ class TestAliasControllerParseMethod(unittest.TestCase):
     def test_parse_alias_validation_errors(self):
         # Test missing required field (name)
         with self.assertRaises(ValidationError):
-            alias_data = {
-                "uuid": "test_uuid",
-                "type": "host",
-                "enabled": "1"
-            }
+            alias_data = {"uuid": "test_uuid", "type": "host", "enabled": "1"}
             self.alias._parse_alias_search_item(alias_data)
 
         # Test invalid type
         with self.assertRaises(ValueError):
-            alias_data = {
-                "uuid": "test_uuid",
-                "name": "test_alias",
-                "type": "invalid_type",
-                "enabled": "1"
-            }
+            alias_data = {"uuid": "test_uuid", "name": "test_alias", "type": "invalid_type", "enabled": "1"}
             self.alias._parse_alias_search_item(alias_data)
 
         # Test invalid enabled value
         with self.assertRaises(ValueError):
-            alias_data = {
-                "uuid": "test_uuid",
-                "name": "test_alias",
-                "type": "host",
-                "enabled": "invalid"
-            }
+            alias_data = {"uuid": "test_uuid", "name": "test_alias", "type": "host", "enabled": "invalid"}
             self.alias._parse_alias_search_item(alias_data)
 
     def test_list_with_various_types(self):
         # Test list method with various alias types
         mock_response = {
-            'rows': [
-                {
-                    'uuid': 'uuid1',
-                    'name': 'host_alias',
-                    'type': 'Host(s)',
-                    'enabled': '1'
-                },
-                {
-                    'uuid': 'uuid2',
-                    'name': 'network_alias',
-                    'type': 'Network(s)',
-                    'enabled': '0'
-                },
-                {
-                    'uuid': 'uuid3',
-                    'name': 'port_alias',
-                    'type': 'Port(s)',
-                    'content': '80\n443',
-                    'enabled': '1'
-                }
+            "rows": [
+                {"uuid": "uuid1", "name": "host_alias", "type": "Host(s)", "enabled": "1"},
+                {"uuid": "uuid2", "name": "network_alias", "type": "Network(s)", "enabled": "0"},
+                {"uuid": "uuid3", "name": "port_alias", "type": "Port(s)", "content": "80\n443", "enabled": "1"},
             ]
         }
         self.alias.fa.search_item = Mock(return_value=mock_response)
@@ -171,4 +126,4 @@ class TestAliasControllerParseMethod(unittest.TestCase):
         self.assertEqual(result[2].type, AliasType.PORT)
         self.assertTrue(result[0].enabled)
         self.assertFalse(result[1].enabled)
-        self.assertEqual(result[2].content, ['80', '443'])
+        self.assertEqual(result[2].content, ["80", "443"])

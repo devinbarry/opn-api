@@ -35,42 +35,42 @@ class TestFilterController(unittest.TestCase):
             gateway=None,
             description="Allow HTTP traffic",
             enabled=True,
-            log=False
+            log=False,
         )
         expected_dict = rule.model_dump(exclude_unset=True)
-        self.filter_controller.ff.add_rule.return_value = {'result': 'success'}
+        self.filter_controller.ff.add_rule.return_value = {"result": "success"}
 
         response = self.filter_controller.add_rule(rule)
 
         self.filter_controller.ff.add_rule.assert_called_once_with(body=expected_dict)
-        self.assertEqual(response, {'result': 'success'})
+        self.assertEqual(response, {"result": "success"})
 
     def test_delete_rule(self):
-        self.filter_controller.ff.del_rule.return_value = {'result': 'deleted'}
+        self.filter_controller.ff.del_rule.return_value = {"result": "deleted"}
         response = self.filter_controller.delete_rule("test_uuid")
         self.filter_controller.ff.del_rule.assert_called_once_with("test_uuid")
-        self.assertEqual(response, {'result': 'deleted'})
+        self.assertEqual(response, {"result": "deleted"})
 
     def test_get_rule_success(self):
         mock_response = {
-            'rule': {
-                'sequence': '10',
-                'action': 'pass',
-                'quick': '1',
-                'interface': 'wan, lan',
-                'direction': 'in',
-                'ipprotocol': 'inet',
-                'protocol': 'TCP',
-                'source_net': '192.168.1.0/24',
-                'source_not': '0',
-                'source_port': '',
-                'destination_net': '10.0.0.0/24',
-                'destination_not': '0',
-                'destination_port': '80',
-                'gateway': '',
-                'description': 'Allow HTTP traffic',
-                'enabled': '1',
-                'log': '0'
+            "rule": {
+                "sequence": "10",
+                "action": "pass",
+                "quick": "1",
+                "interface": "wan, lan",
+                "direction": "in",
+                "ipprotocol": "inet",
+                "protocol": "TCP",
+                "source_net": "192.168.1.0/24",
+                "source_not": "0",
+                "source_port": "",
+                "destination_net": "10.0.0.0/24",
+                "destination_not": "0",
+                "destination_port": "80",
+                "gateway": "",
+                "description": "Allow HTTP traffic",
+                "enabled": "1",
+                "log": "0",
             }
         }
         self.filter_controller.ff.get_rule.return_value = mock_response
@@ -93,7 +93,7 @@ class TestFilterController(unittest.TestCase):
             gateway="",
             description="Allow HTTP traffic",
             enabled=True,
-            log=False
+            log=False,
         )
 
         rule = self.filter_controller.get_rule("test_uuid")
@@ -108,8 +108,8 @@ class TestFilterController(unittest.TestCase):
 
     def test_get_rule_parsing_error(self):
         mock_response = {
-            'rule': {
-                'sequence': 'invalid_int',
+            "rule": {
+                "sequence": "invalid_int",
                 # Other fields are omitted for brevity
             }
         }
@@ -136,15 +136,15 @@ class TestFilterController(unittest.TestCase):
             gateway="fe80::1",
             description="Block DNS traffic",
             enabled=False,
-            log=True
+            log=True,
         )
         expected_dict = rule.model_dump(exclude_unset=True)
-        self.filter_controller.ff.set_rule.return_value = {'result': 'updated'}
+        self.filter_controller.ff.set_rule.return_value = {"result": "updated"}
 
         response = self.filter_controller.set_rule("test_uuid", rule)
 
         self.filter_controller.ff.set_rule.assert_called_once_with("test_uuid", body=expected_dict)
-        self.assertEqual(response, {'result': 'updated'})
+        self.assertEqual(response, {"result": "updated"})
 
     def test_toggle_rule_enable(self):
         # Initially disabled
@@ -166,16 +166,16 @@ class TestFilterController(unittest.TestCase):
             gateway=None,
             description="Reject ICMP traffic",
             enabled=False,
-            log=True
+            log=True,
         )
         self.filter_controller.get_rule = Mock(return_value=mock_rule)
-        self.filter_controller.ff.toggle_rule.return_value = {'result': 'toggled'}
+        self.filter_controller.ff.toggle_rule.return_value = {"result": "toggled"}
 
         response = self.filter_controller.toggle_rule("test_uuid")
 
         self.filter_controller.get_rule.assert_called_once_with("test_uuid")
         self.filter_controller.ff.toggle_rule.assert_called_once_with("test_uuid", body={"enabled": 1})
-        self.assertEqual(response, {'result': 'toggled'})
+        self.assertEqual(response, {"result": "toggled"})
 
     def test_toggle_rule_disable(self):
         # Initially enabled
@@ -197,85 +197,85 @@ class TestFilterController(unittest.TestCase):
             gateway=None,
             description="Allow all traffic",
             enabled=True,
-            log=False
+            log=False,
         )
         self.filter_controller.get_rule = Mock(return_value=mock_rule)
-        self.filter_controller.ff.toggle_rule.return_value = {'result': 'toggled'}
+        self.filter_controller.ff.toggle_rule.return_value = {"result": "toggled"}
 
         response = self.filter_controller.toggle_rule("test_uuid")
 
         self.filter_controller.get_rule.assert_called_once_with("test_uuid")
         self.filter_controller.ff.toggle_rule.assert_called_once_with("test_uuid", body={"enabled": 0})
-        self.assertEqual(response, {'result': 'toggled'})
+        self.assertEqual(response, {"result": "toggled"})
 
     def test_apply_changes(self):
-        self.filter_controller.ff.apply.return_value = {'result': 'applied'}
+        self.filter_controller.ff.apply.return_value = {"result": "applied"}
         response = self.filter_controller.apply_changes()
         self.filter_controller.ff.apply.assert_called_once()
-        self.assertEqual(response, {'result': 'applied'})
+        self.assertEqual(response, {"result": "applied"})
 
     def test_create_savepoint(self):
-        self.filter_controller.ff.savepoint.return_value = {'result': 'savepoint_created'}
+        self.filter_controller.ff.savepoint.return_value = {"result": "savepoint_created"}
         response = self.filter_controller.create_savepoint()
         self.filter_controller.ff.savepoint.assert_called_once()
-        self.assertEqual(response, {'result': 'savepoint_created'})
+        self.assertEqual(response, {"result": "savepoint_created"})
 
     def test_cancel_rollback(self):
-        self.filter_controller.ff.cancel_rollback.return_value = {'result': 'rollback_cancelled'}
+        self.filter_controller.ff.cancel_rollback.return_value = {"result": "rollback_cancelled"}
         response = self.filter_controller.cancel_rollback()
         self.filter_controller.ff.cancel_rollback.assert_called_once()
-        self.assertEqual(response, {'result': 'rollback_cancelled'})
+        self.assertEqual(response, {"result": "rollback_cancelled"})
 
     def test_list_rules(self):
         mock_response = {
-            'rows': [
+            "rows": [
                 {
-                    'uuid': 'rule_uuid_1',
-                    'sequence': '10',
-                    'action': 'pass',
-                    'quick': '1',
-                    'interface': 'wan, lan',
-                    'direction': 'in',
-                    'ipprotocol': 'inet',
-                    'protocol': 'TCP',
-                    'source_net': '192.168.1.0/24',
-                    'source_not': '0',
-                    'source_port': '80',
-                    'destination_net': '10.0.0.0/24',
-                    'destination_not': '0',
-                    'destination_port': '443',
-                    'gateway': '',
-                    'description': 'Allow HTTPS traffic',
-                    'enabled': '1',
-                    'log': '1'
+                    "uuid": "rule_uuid_1",
+                    "sequence": "10",
+                    "action": "pass",
+                    "quick": "1",
+                    "interface": "wan, lan",
+                    "direction": "in",
+                    "ipprotocol": "inet",
+                    "protocol": "TCP",
+                    "source_net": "192.168.1.0/24",
+                    "source_not": "0",
+                    "source_port": "80",
+                    "destination_net": "10.0.0.0/24",
+                    "destination_not": "0",
+                    "destination_port": "443",
+                    "gateway": "",
+                    "description": "Allow HTTPS traffic",
+                    "enabled": "1",
+                    "log": "1",
                 },
                 {
-                    'uuid': 'rule_uuid_2',
-                    'sequence': '20',
-                    'action': 'block',
-                    'quick': '0',
-                    'interface': 'dmz',
-                    'direction': 'out',
-                    'ipprotocol': 'inet6',
-                    'protocol': 'UDP',
-                    'source_net': '172.16.0.0/16',
-                    'source_not': '1',
-                    'source_port': '',
-                    'destination_net': '192.168.2.0/24',
-                    'destination_not': '1',
-                    'destination_port': '',
-                    'gateway': 'fe80::1',
-                    'description': 'Block DNS traffic',
-                    'enabled': '0',
-                    'log': '0'
-                }
+                    "uuid": "rule_uuid_2",
+                    "sequence": "20",
+                    "action": "block",
+                    "quick": "0",
+                    "interface": "dmz",
+                    "direction": "out",
+                    "ipprotocol": "inet6",
+                    "protocol": "UDP",
+                    "source_net": "172.16.0.0/16",
+                    "source_not": "1",
+                    "source_port": "",
+                    "destination_net": "192.168.2.0/24",
+                    "destination_not": "1",
+                    "destination_port": "",
+                    "gateway": "fe80::1",
+                    "description": "Block DNS traffic",
+                    "enabled": "0",
+                    "log": "0",
+                },
             ]
         }
         self.filter_controller.ff.search_rule.return_value = mock_response
 
         expected_rules = [
             FirewallFilterRuleResponse(
-                uuid='rule_uuid_1',
+                uuid="rule_uuid_1",
                 sequence=10,
                 action=Action.PASS,
                 quick=True,
@@ -283,19 +283,19 @@ class TestFilterController(unittest.TestCase):
                 direction=Direction.IN,
                 ipprotocol=IPProtocol.INET,
                 protocol=Protocol.TCP,
-                source_net='192.168.1.0/24',
+                source_net="192.168.1.0/24",
                 source_not=False,
-                source_port='80',
-                destination_net='10.0.0.0/24',
+                source_port="80",
+                destination_net="10.0.0.0/24",
                 destination_not=False,
-                destination_port='443',
-                gateway='',
-                description='Allow HTTPS traffic',
+                destination_port="443",
+                gateway="",
+                description="Allow HTTPS traffic",
                 enabled=True,
-                log=True
+                log=True,
             ),
             FirewallFilterRuleResponse(
-                uuid='rule_uuid_2',
+                uuid="rule_uuid_2",
                 sequence=20,
                 action=Action.BLOCK,
                 quick=False,
@@ -303,17 +303,17 @@ class TestFilterController(unittest.TestCase):
                 direction=Direction.OUT,
                 ipprotocol=IPProtocol.INET6,
                 protocol=Protocol.UDP,
-                source_net='172.16.0.0/16',
+                source_net="172.16.0.0/16",
                 source_not=True,
-                source_port='',
-                destination_net='192.168.2.0/24',
+                source_port="",
+                destination_net="192.168.2.0/24",
                 destination_not=True,
-                destination_port='',
-                gateway='fe80::1',
-                description='Block DNS traffic',
+                destination_port="",
+                gateway="fe80::1",
+                description="Block DNS traffic",
                 enabled=False,
-                log=False
-            )
+                log=False,
+            ),
         ]
 
         rules = self.filter_controller.list_rules()
@@ -321,17 +321,17 @@ class TestFilterController(unittest.TestCase):
         self.assertEqual(rules, expected_rules)
 
     def test_list_rules_empty(self):
-        self.filter_controller.ff.search_rule.return_value = {'rows': []}
+        self.filter_controller.ff.search_rule.return_value = {"rows": []}
         rules = self.filter_controller.list_rules()
         self.filter_controller.ff.search_rule.assert_called_once_with(body={})
         self.assertEqual(rules, [])
 
     def test_list_rules_parsing_error(self):
         mock_response = {
-            'rows': [
+            "rows": [
                 {
-                    'uuid': 'invalid_rule_uuid',
-                    'sequence': 'invalid_int',
+                    "uuid": "invalid_rule_uuid",
+                    "sequence": "invalid_int",
                     # Other fields are omitted for brevity
                 }
             ]
@@ -345,7 +345,7 @@ class TestFilterController(unittest.TestCase):
     def test_match_rule_by_attributes_found(self):
         mock_rules = [
             FirewallFilterRuleResponse(
-                uuid='rule_uuid_1',
+                uuid="rule_uuid_1",
                 sequence=10,
                 action=Action.PASS,
                 quick=True,
@@ -353,19 +353,19 @@ class TestFilterController(unittest.TestCase):
                 direction=Direction.IN,
                 ipprotocol=IPProtocol.INET,
                 protocol=Protocol.TCP,
-                source_net='192.168.1.0/24',
+                source_net="192.168.1.0/24",
                 source_not=False,
-                source_port='80',
-                destination_net='10.0.0.0/24',
+                source_port="80",
+                destination_net="10.0.0.0/24",
                 destination_not=False,
-                destination_port='443',
-                gateway='',
-                description='Allow HTTPS traffic',
+                destination_port="443",
+                gateway="",
+                description="Allow HTTPS traffic",
                 enabled=True,
-                log=True
+                log=True,
             ),
             FirewallFilterRuleResponse(
-                uuid='rule_uuid_2',
+                uuid="rule_uuid_2",
                 sequence=20,
                 action=Action.BLOCK,
                 quick=False,
@@ -373,41 +373,41 @@ class TestFilterController(unittest.TestCase):
                 direction=Direction.OUT,
                 ipprotocol=IPProtocol.INET6,
                 protocol=Protocol.UDP,
-                source_net='172.16.0.0/16',
+                source_net="172.16.0.0/16",
                 source_not=True,
-                source_port='',
-                destination_net='192.168.2.0/24',
+                source_port="",
+                destination_net="192.168.2.0/24",
                 destination_not=True,
-                destination_port='',
-                gateway='fe80::1',
-                description='Block DNS traffic',
+                destination_port="",
+                gateway="fe80::1",
+                description="Block DNS traffic",
                 enabled=False,
-                log=False
-            )
+                log=False,
+            ),
         ]
         self.filter_controller.list_rules = Mock(return_value=mock_rules)
 
         matched = self.filter_controller.match_rule_by_attributes(action=Action.PASS, enabled=True)
         expected = [
             {
-                'uuid': 'rule_uuid_1',
-                'sequence': 10,
-                'action': Action.PASS,
-                'quick': True,
-                'interface': ["wan", "lan"],
-                'direction': Direction.IN,
-                'ipprotocol': IPProtocol.INET,
-                'protocol': Protocol.TCP,
-                'source_net': '192.168.1.0/24',
-                'source_not': False,
-                'source_port': '80',
-                'destination_net': '10.0.0.0/24',
-                'destination_not': False,
-                'destination_port': '443',
-                'gateway': '',
-                'description': 'Allow HTTPS traffic',
-                'enabled': True,
-                'log': True
+                "uuid": "rule_uuid_1",
+                "sequence": 10,
+                "action": Action.PASS,
+                "quick": True,
+                "interface": ["wan", "lan"],
+                "direction": Direction.IN,
+                "ipprotocol": IPProtocol.INET,
+                "protocol": Protocol.TCP,
+                "source_net": "192.168.1.0/24",
+                "source_not": False,
+                "source_port": "80",
+                "destination_net": "10.0.0.0/24",
+                "destination_not": False,
+                "destination_port": "443",
+                "gateway": "",
+                "description": "Allow HTTPS traffic",
+                "enabled": True,
+                "log": True,
             }
         ]
         self.assertEqual(matched, expected)
@@ -415,7 +415,7 @@ class TestFilterController(unittest.TestCase):
     def test_match_rule_by_attributes_not_found(self):
         mock_rules = [
             FirewallFilterRuleResponse(
-                uuid='rule_uuid_1',
+                uuid="rule_uuid_1",
                 sequence=10,
                 action=Action.PASS,
                 quick=True,
@@ -423,16 +423,16 @@ class TestFilterController(unittest.TestCase):
                 direction=Direction.IN,
                 ipprotocol=IPProtocol.INET,
                 protocol=Protocol.TCP,
-                source_net='192.168.1.0/24',
+                source_net="192.168.1.0/24",
                 source_not=False,
-                source_port='80',
-                destination_net='10.0.0.0/24',
+                source_port="80",
+                destination_net="10.0.0.0/24",
                 destination_not=False,
-                destination_port='443',
-                gateway='',
-                description='Allow HTTPS traffic',
+                destination_port="443",
+                gateway="",
+                description="Allow HTTPS traffic",
                 enabled=True,
-                log=True
+                log=True,
             )
         ]
         self.filter_controller.list_rules = Mock(return_value=mock_rules)
@@ -443,7 +443,7 @@ class TestFilterController(unittest.TestCase):
     def test_match_rule_by_attributes_partial_match(self):
         mock_rules = [
             FirewallFilterRuleResponse(
-                uuid='rule_uuid_1',
+                uuid="rule_uuid_1",
                 sequence=10,
                 action=Action.PASS,
                 quick=True,
@@ -451,19 +451,19 @@ class TestFilterController(unittest.TestCase):
                 direction=Direction.IN,
                 ipprotocol=IPProtocol.INET,
                 protocol=Protocol.TCP,
-                source_net='192.168.1.0/24',
+                source_net="192.168.1.0/24",
                 source_not=False,
-                source_port='80',
-                destination_net='10.0.0.0/24',
+                source_port="80",
+                destination_net="10.0.0.0/24",
                 destination_not=False,
-                destination_port='443',
-                gateway='',
-                description='Allow HTTPS traffic',
+                destination_port="443",
+                gateway="",
+                description="Allow HTTPS traffic",
                 enabled=True,
-                log=True
+                log=True,
             ),
             FirewallFilterRuleResponse(
-                uuid='rule_uuid_2',
+                uuid="rule_uuid_2",
                 sequence=20,
                 action=Action.BLOCK,
                 quick=False,
@@ -471,41 +471,41 @@ class TestFilterController(unittest.TestCase):
                 direction=Direction.OUT,
                 ipprotocol=IPProtocol.INET6,
                 protocol=Protocol.UDP,
-                source_net='172.16.0.0/16',
+                source_net="172.16.0.0/16",
                 source_not=True,
-                source_port='',
-                destination_net='192.168.2.0/24',
+                source_port="",
+                destination_net="192.168.2.0/24",
                 destination_not=True,
-                destination_port='',
-                gateway='fe80::1',
-                description='Block DNS traffic',
+                destination_port="",
+                gateway="fe80::1",
+                description="Block DNS traffic",
                 enabled=False,
-                log=False
-            )
+                log=False,
+            ),
         ]
         self.filter_controller.list_rules = Mock(return_value=mock_rules)
 
         matched = self.filter_controller.match_rule_by_attributes(direction=Direction.OUT, protocol=Protocol.UDP)
         expected = [
             {
-                'uuid': 'rule_uuid_2',
-                'sequence': 20,
-                'action': Action.BLOCK,
-                'quick': False,
-                'interface': ["dmz"],
-                'direction': Direction.OUT,
-                'ipprotocol': IPProtocol.INET6,
-                'protocol': Protocol.UDP,
-                'source_net': '172.16.0.0/16',
-                'source_not': True,
-                'source_port': '',
-                'destination_net': '192.168.2.0/24',
-                'destination_not': True,
-                'destination_port': '',
-                'gateway': 'fe80::1',
-                'description': 'Block DNS traffic',
-                'enabled': False,
-                'log': False
+                "uuid": "rule_uuid_2",
+                "sequence": 20,
+                "action": Action.BLOCK,
+                "quick": False,
+                "interface": ["dmz"],
+                "direction": Direction.OUT,
+                "ipprotocol": IPProtocol.INET6,
+                "protocol": Protocol.UDP,
+                "source_net": "172.16.0.0/16",
+                "source_not": True,
+                "source_port": "",
+                "destination_net": "192.168.2.0/24",
+                "destination_not": True,
+                "destination_port": "",
+                "gateway": "fe80::1",
+                "description": "Block DNS traffic",
+                "enabled": False,
+                "log": False,
             }
         ]
         self.assertEqual(matched, expected)

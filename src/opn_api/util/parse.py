@@ -4,12 +4,12 @@ from opn_api.exceptions import ParsingError
 def parse_firewall_filter_search_results(search_results):
     for found_rule in search_results:
         try:
-            found_rule['sequence'] = int(found_rule['sequence'])
+            found_rule["sequence"] = int(found_rule["sequence"])
         except Exception as error:
             raise ParsingError(None, found_rule, f"Failed to parse filter search result attribute sequence. {error}")
 
         try:
-            found_rule['enabled'] = bool(int(found_rule['enabled']))
+            found_rule["enabled"] = bool(int(found_rule["enabled"]))
         except Exception as error:
             raise ParsingError(None, found_rule, f"Failed to parse filter search result attribute enabled. {error}")
 
@@ -27,8 +27,9 @@ def parse_firewall_filter_rule(filter_uuid, filter_rule):
         else:
             source_port = int(filter_rule["source_port"])
     except Exception as error:
-        raise ParsingError(filter_uuid, filter_rule['source_port'],
-                           f"Failed to parse filter attribute source_port. {error}")
+        raise ParsingError(
+            filter_uuid, filter_rule["source_port"], f"Failed to parse filter attribute source_port. {error}"
+        )
 
     try:
         if filter_rule["destination_port"] == "":
@@ -36,40 +37,43 @@ def parse_firewall_filter_rule(filter_uuid, filter_rule):
         else:
             destination_port = int(filter_rule["destination_port"])
     except Exception as error:
-        raise ParsingError(filter_uuid, filter_rule['destination_port'],
-                           f"Failed to parse filter attribute destination_port. {error}")
+        raise ParsingError(
+            filter_uuid, filter_rule["destination_port"], f"Failed to parse filter attribute destination_port. {error}"
+        )
 
     try:
         sequence = int(filter_rule["sequence"])
     except Exception as error:
-        raise ParsingError(filter_uuid, filter_rule['sequence'], f"Failed to parse filter attribute sequence. {error}")
+        raise ParsingError(filter_uuid, filter_rule["sequence"], f"Failed to parse filter attribute sequence. {error}")
 
     try:
-        enabled = bool(int(filter_rule['enabled']))
+        enabled = bool(int(filter_rule["enabled"]))
     except Exception as error:
-        raise ParsingError(filter_uuid, filter_rule['enabled'], f"Failed to parse filter attribute enabled. {error}")
+        raise ParsingError(filter_uuid, filter_rule["enabled"], f"Failed to parse filter attribute enabled. {error}")
 
     try:
-        quick = bool(int(filter_rule['quick']))
+        quick = bool(int(filter_rule["quick"]))
     except Exception as error:
-        raise ParsingError(filter_uuid, filter_rule['quick'], f"Failed to parse filter attribute quick. {error}")
+        raise ParsingError(filter_uuid, filter_rule["quick"], f"Failed to parse filter attribute quick. {error}")
 
     try:
-        log = bool(int(filter_rule['log']))
+        log = bool(int(filter_rule["log"]))
     except Exception as error:
-        raise ParsingError(filter_uuid, filter_rule['log'], f"Failed to parse filter attribute log. {error}")
+        raise ParsingError(filter_uuid, filter_rule["log"], f"Failed to parse filter attribute log. {error}")
 
     try:
-        source_not = bool(int(filter_rule['source_not']))
+        source_not = bool(int(filter_rule["source_not"]))
     except Exception as error:
-        raise ParsingError(filter_uuid, filter_rule['source_not'],
-                           f"Failed to parse filter attribute source_not. {error}")
+        raise ParsingError(
+            filter_uuid, filter_rule["source_not"], f"Failed to parse filter attribute source_not. {error}"
+        )
 
     try:
-        destination_not = bool(int(filter_rule['destination_not']))
+        destination_not = bool(int(filter_rule["destination_not"]))
     except Exception as error:
-        raise ParsingError(filter_uuid, filter_rule['destination_not'],
-                           f"Failed to parse filter attribute destination_not. {error}")
+        raise ParsingError(
+            filter_uuid, filter_rule["destination_not"], f"Failed to parse filter attribute destination_not. {error}"
+        )
 
     try:
         parsed_filter_rule_action = None
@@ -78,7 +82,7 @@ def parse_firewall_filter_rule(filter_uuid, filter_rule):
                 parsed_filter_rule_action = filter_rule_action
                 break
     except Exception as error:
-        raise ParsingError(filter_uuid, filter_rule['action'], f"Failed to parse filter action. {error}")
+        raise ParsingError(filter_uuid, filter_rule["action"], f"Failed to parse filter action. {error}")
 
     try:
         parsed_filter_rule_interfaces = []
@@ -86,7 +90,7 @@ def parse_firewall_filter_rule(filter_uuid, filter_rule):
             if bool(int(filter_rule["interface"][filter_rule_interface]["selected"])):
                 parsed_filter_rule_interfaces.append(filter_rule_interface)
     except Exception as error:
-        raise ParsingError(filter_uuid, filter_rule['interface'], f"Failed to parse filter interface. {error}")
+        raise ParsingError(filter_uuid, filter_rule["interface"], f"Failed to parse filter interface. {error}")
 
     try:
         parsed_filter_rule_direction = None
@@ -95,7 +99,7 @@ def parse_firewall_filter_rule(filter_uuid, filter_rule):
                 parsed_filter_rule_direction = filter_rule_direction
                 break
     except Exception as error:
-        raise ParsingError(filter_uuid, filter_rule['direction'], f"Failed to parse filter direction. {error}")
+        raise ParsingError(filter_uuid, filter_rule["direction"], f"Failed to parse filter direction. {error}")
 
     try:
         parsed_filter_rule_ipprotocol = None
@@ -104,7 +108,7 @@ def parse_firewall_filter_rule(filter_uuid, filter_rule):
                 parsed_filter_rule_ipprotocol = filter_rule_ipprotocol
                 break
     except Exception as error:
-        raise ParsingError(filter_uuid, filter_rule['ipprotocol'], f"Failed to parse filter ipprotocol. {error}")
+        raise ParsingError(filter_uuid, filter_rule["ipprotocol"], f"Failed to parse filter ipprotocol. {error}")
 
     try:
         parsed_filter_rule_protocol = None
@@ -113,7 +117,7 @@ def parse_firewall_filter_rule(filter_uuid, filter_rule):
                 parsed_filter_rule_protocol = filter_rule_protocol
                 break
     except Exception as error:
-        raise ParsingError(filter_uuid, filter_rule['protocol'], f"Failed to parse filter protocol. {error}")
+        raise ParsingError(filter_uuid, filter_rule["protocol"], f"Failed to parse filter protocol. {error}")
 
     try:
         parsed_filter_rule_gateway = None
@@ -124,12 +128,25 @@ def parse_firewall_filter_rule(filter_uuid, filter_rule):
                     parsed_filter_rule_gateway = None
                 break
     except Exception as error:
-        raise ParsingError(filter_uuid, filter_rule['gateway'], f"Failed to parse filter gateway. {error}")
+        raise ParsingError(filter_uuid, filter_rule["gateway"], f"Failed to parse filter gateway. {error}")
 
-    return {"uuid": filter_uuid, "sequence": sequence, "description": description, "enabled": enabled, "quick": quick,
-            "log": log, "source_net": source_net, "source_not": source_not, "source_port": source_port,
-            "destination_net": destination_net, "destination_not": destination_not,
-            "destination_port": destination_port,
-            "action": parsed_filter_rule_action, "interface": parsed_filter_rule_interfaces,
-            "direction": parsed_filter_rule_direction, "ipprotocol": parsed_filter_rule_ipprotocol,
-            "protocol": parsed_filter_rule_protocol, "gateway": parsed_filter_rule_gateway}
+    return {
+        "uuid": filter_uuid,
+        "sequence": sequence,
+        "description": description,
+        "enabled": enabled,
+        "quick": quick,
+        "log": log,
+        "source_net": source_net,
+        "source_not": source_not,
+        "source_port": source_port,
+        "destination_net": destination_net,
+        "destination_not": destination_not,
+        "destination_port": destination_port,
+        "action": parsed_filter_rule_action,
+        "interface": parsed_filter_rule_interfaces,
+        "direction": parsed_filter_rule_direction,
+        "ipprotocol": parsed_filter_rule_ipprotocol,
+        "protocol": parsed_filter_rule_protocol,
+        "gateway": parsed_filter_rule_gateway,
+    }

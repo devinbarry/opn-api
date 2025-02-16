@@ -4,7 +4,7 @@ test_uuid = str(uuid.uuid4())
 
 
 def mock_add_item_data():
-    return {'result': 'saved', 'uuid': str(uuid.uuid4())}
+    return {"result": "saved", "uuid": str(uuid.uuid4())}
 
 
 def mock_del_item_data():

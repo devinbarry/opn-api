@@ -18,14 +18,14 @@ class TestAliasController(unittest.TestCase):
 
     def test_list(self):
         mock_response = {
-            'rows': [
+            "rows": [
                 {
-                    'uuid': 'test_uuid',
-                    'name': 'test_alias',
-                    'description': 'Test alias description',
-                    'type': 'Host(s)',
-                    'content': '192.168.1.1',
-                    'enabled': '1'
+                    "uuid": "test_uuid",
+                    "name": "test_alias",
+                    "description": "Test alias description",
+                    "type": "Host(s)",
+                    "content": "192.168.1.1",
+                    "enabled": "1",
                 }
             ]
         }
@@ -33,127 +33,111 @@ class TestAliasController(unittest.TestCase):
         result = self.alias.list()
         self.assertIsInstance(result, list)
         self.assertIsInstance(result[0], FirewallAliasResponse)
-        self.assertEqual(result[0].name, 'test_alias')
-        self.assertEqual(result[0].description, 'Test alias description')
+        self.assertEqual(result[0].name, "test_alias")
+        self.assertEqual(result[0].description, "Test alias description")
         self.assertEqual(result[0].type, AliasType.HOST)
-        self.assertEqual(result[0].content, ['192.168.1.1'])
+        self.assertEqual(result[0].content, ["192.168.1.1"])
         self.assertTrue(result[0].enabled)
 
     def test_list_empty(self):
-        self.alias.fa.search_item = Mock(return_value={'rows': []})
+        self.alias.fa.search_item = Mock(return_value={"rows": []})
         result = self.alias.list()
         self.assertEqual(result, [])
 
     def test_get(self):
         mock_response = {
-            'alias': {
-                'name': 'test_alias',
-                'description': 'Test description',
-                'type': {'host': {'selected': 1}},
-                'proto': {'IPv4': {'selected': 1}},
-                'content': {
-                    '192.168.1.1': {'selected': 1, 'value': '192.168.1.1'}
-                },
-                'enabled': '1'
+            "alias": {
+                "name": "test_alias",
+                "description": "Test description",
+                "type": {"host": {"selected": 1}},
+                "proto": {"IPv4": {"selected": 1}},
+                "content": {"192.168.1.1": {"selected": 1, "value": "192.168.1.1"}},
+                "enabled": "1",
             }
         }
         self.alias.fa.get_item = Mock(return_value=mock_response)
-        result = self.alias.get('test_uuid')
+        result = self.alias.get("test_uuid")
         self.assertIsInstance(result, FirewallAliasResponse)
-        self.assertEqual(result.name, 'test_alias')
-        self.assertEqual(result.description, 'Test description')
+        self.assertEqual(result.name, "test_alias")
+        self.assertEqual(result.description, "Test description")
         self.assertEqual(result.type, AliasType.HOST)
         self.assertEqual(result.proto, ProtocolType.IPV4)
-        self.assertEqual(result.content, ['192.168.1.1'])
+        self.assertEqual(result.content, ["192.168.1.1"])
         self.assertTrue(result.enabled)
 
     def test_get_missing_description(self):
         mock_response = {
-            'alias': {
-                'name': 'test_alias',
-                'type': {'host': {'selected': 1}},
-                'proto': {'IPv4': {'selected': 1}},
-                'content': {
-                    '192.168.1.1': {'selected': 1, 'value': '192.168.1.1'}
-                },
-                'enabled': '1'
+            "alias": {
+                "name": "test_alias",
+                "type": {"host": {"selected": 1}},
+                "proto": {"IPv4": {"selected": 1}},
+                "content": {"192.168.1.1": {"selected": 1, "value": "192.168.1.1"}},
+                "enabled": "1",
             }
         }
         self.alias.fa.get_item = Mock(return_value=mock_response)
-        result = self.alias.get('test_uuid')
+        result = self.alias.get("test_uuid")
         self.assertIsInstance(result, FirewallAliasResponse)
-        self.assertEqual(result.name, 'test_alias')
-        self.assertEqual(result.description, '')
+        self.assertEqual(result.name, "test_alias")
+        self.assertEqual(result.description, "")
         self.assertEqual(result.type, AliasType.HOST)
         self.assertEqual(result.proto, ProtocolType.IPV4)
-        self.assertEqual(result.content, ['192.168.1.1'])
+        self.assertEqual(result.content, ["192.168.1.1"])
         self.assertTrue(result.enabled)
 
     def test_get_not_found(self):
         self.alias.fa.get_item = Mock(return_value={})
         with self.assertRaises(ValueError):
-            self.alias.get('non_existent_uuid')
+            self.alias.get("non_existent_uuid")
 
     def test_get_uuid(self):
-        mock_response = {'uuid': 'test_uuid'}
+        mock_response = {"uuid": "test_uuid"}
         self.alias.fa.get_uuid_for_name = Mock(return_value=mock_response)
-        result = self.alias.get_uuid('test_alias')
-        self.assertEqual(result, 'test_uuid')
+        result = self.alias.get_uuid("test_alias")
+        self.assertEqual(result, "test_uuid")
 
     def test_get_uuid_not_found(self):
         self.alias.fa.get_uuid_for_name = Mock(return_value={})
         with self.assertRaises(ValueError):
-            self.alias.get_uuid('non_existent_alias')
+            self.alias.get_uuid("non_existent_alias")
 
     def test_toggle(self):
         alias_response = FirewallAliasResponse(
-            uuid='test_uuid',
-            name='test_alias',
-            type=AliasType.HOST,
-            description='',
-            content=[],
-            enabled=True
+            uuid="test_uuid", name="test_alias", type=AliasType.HOST, description="", content=[], enabled=True
         )
         self.alias.get = Mock(return_value=alias_response)
-        self.alias.fa.toggle_item = Mock(return_value={'result': 'ok'})
-        result = self.alias.toggle('test_uuid')
-        self.alias.fa.toggle_item.assert_called_with('test_uuid', body={'enabled': 0})
-        self.assertEqual(result, {'result': 'ok'})
+        self.alias.fa.toggle_item = Mock(return_value={"result": "ok"})
+        result = self.alias.toggle("test_uuid")
+        self.alias.fa.toggle_item.assert_called_with("test_uuid", body={"enabled": 0})
+        self.assertEqual(result, {"result": "ok"})
 
     def test_delete(self):
-        self.alias.fa.del_item = Mock(return_value={'result': 'ok'})
-        result = self.alias.delete('test_uuid')
-        self.alias.fa.del_item.assert_called_with('test_uuid')
-        self.assertEqual(result, {'result': 'ok'})
+        self.alias.fa.del_item = Mock(return_value={"result": "ok"})
+        result = self.alias.delete("test_uuid")
+        self.alias.fa.del_item.assert_called_with("test_uuid")
+        self.assertEqual(result, {"result": "ok"})
 
     def test_add(self):
-        response = {'result': 'saved', 'uuid': str(uuid.uuid4())}
+        response = {"result": "saved", "uuid": str(uuid.uuid4())}
         self.alias.fa.add_item = Mock(return_value=response)
         alias_create = FirewallAliasCreate(
-            name='test_alias',
-            type=AliasType.HOST,
-            content=['192.168.1.1'],
-            enabled=True
+            name="test_alias", type=AliasType.HOST, content=["192.168.1.1"], enabled=True
         )
         result = self.alias.add(alias_create)
         self.alias.fa.add_item.assert_called_once()
         self.assertEqual(result, response)
 
     def test_set(self):
-        self.alias.fa.set_item = Mock(return_value={'result': 'ok'})
+        self.alias.fa.set_item = Mock(return_value={"result": "ok"})
         alias_update = FirewallAliasUpdate(
-            uuid='test_uuid',
-            name='test_alias',
-            type=AliasType.HOST,
-            content=['192.168.1.1'],
-            enabled=True
+            uuid="test_uuid", name="test_alias", type=AliasType.HOST, content=["192.168.1.1"], enabled=True
         )
         result = self.alias.set(alias_update)
         self.alias.fa.set_item.assert_called_once()
-        self.assertEqual(result, {'result': 'ok'})
+        self.assertEqual(result, {"result": "ok"})
 
     def test_apply_changes(self):
-        self.alias.fa.reconfigure = Mock(return_value={'result': 'ok'})
+        self.alias.fa.reconfigure = Mock(return_value={"result": "ok"})
         result = self.alias.apply_changes()
         self.alias.fa.reconfigure.assert_called_once()
-        self.assertEqual(result, {'result': 'ok'})
+        self.assertEqual(result, {"result": "ok"})
