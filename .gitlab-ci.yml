@@ -1,14 +1,16 @@
 stages:
   - test
   - build
+  - publish_prod
 
 test_opn_api:
   stage: test
   image: python:3.12
   tags:
     - python
-  only:
-    - master
+  rules:
+    - if: '$CI_COMMIT_REF_NAME == "master" || $CI_COMMIT_TAG'
+      when: on_success
   before_script:
     - python --version
     - pip --version
@@ -65,3 +67,31 @@ build_and_publish:
     - pip install hatch
     - hatch build
     - hatch publish --repo $PYPI_REPO_URL --user $PYPI_REPO_USER --auth $PYPI_REPO_AUTH
+
+publish_to_test_pypi:
+  stage: build
+  image: python:3.12
+  rules:
+    - if: '$CI_COMMIT_REF_NAME == "master" || $CI_COMMIT_TAG'
+      when: on_success
+  script:
+    - export TWINE_USERNAME="__token__"
+    - export TWINE_PASSWORD="$PYPI_TEST_API_TOKEN"
+    - pip install hatch twine
+    - hatch build
+    - twine upload --non-interactive -r testpypi dist/*
+
+
+publish_to_prod_pypi:
+  stage: publish_prod
+  image: python:3.12
+  needs:
+    - publish_to_test_pypi
+  rules:
+    - if: '$CI_COMMIT_TAG'  # Only run this job on tag builds
+  script:
+    - export TWINE_USERNAME="__token__"
+    - export TWINE_PASSWORD="$PYPI_PROD_API_TOKEN"
+    - pip install hatch twine
+    - hatch build
+    - twine upload --non-interactive -r pypi dist/*
