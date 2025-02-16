@@ -3,7 +3,7 @@ requires = ["hatchling"]
 build-backend = "hatchling.build"
 
 [project]
-name = "opn_api"
+name = "opn-api"
 requires-python = ">=3.11"
 dynamic = ["version"]
 description = "A Python client library for OPNsense API."
@@ -19,17 +19,29 @@ keywords = [
     "API",
 ]
 classifiers = [
-    "Topic :: Software Development :: Libraries :: Python Modules"
+    "Topic :: Software Development :: Libraries :: Python Modules",
+    "Development Status :: 4 - Beta",
+    "Intended Audience :: Developers",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Programming Language :: Python :: 3.13",
 ]
 dependencies = [
     "requests",
     "pydantic",
 ]
 
+[project.optional-dependencies]
+dev = ["pytest", "ruff"]
+
 [project.urls]
 homepage = "https://github.com/andeman/opnsense_cli"
 repository = "https://github.com/andeman/opnsense_cli"
 documentation = "https://github.com/andeman/opnsense_cli"
+
+[tool.ruff]
+line-length = 120
 
 [tool.hatch.version]
 path = "src/opn_api/__init__.py"
