@@ -13,11 +13,11 @@ test_opn_api:
     - python --version
     - pip --version
   script:
-    - pip install -r requirements/requirements_dev.txt
+    - pip install pytest
     # Install opn_api in editable mode
     - pip install -e .
     # Run all tests
-    - python -m unittest discover -s tests
+    - pytest
 
 
 build_and_publish:
