@@ -2,7 +2,26 @@ import unittest
 from unittest.mock import MagicMock
 from opn_api.api.core.firewall import FirewallAlias
 from opn_api.api.client import OPNAPIClient
-from tests.mocks.alias import *
+from tests.mocks.alias import (
+    mock_export_data,
+    mock_get_detail_data,
+    mock_get_item_data,
+    mock_get_uuid_for_name_data,
+    mock_get_geo_ip_data,
+    mock_get_table_size_data,
+    mock_list_categories_data,
+    mock_list_countries_data,
+    mock_list_network_aliases_data,
+    mock_list_user_groups_data,
+    mock_search_item_data,
+    mock_add_item_data,
+    mock_del_item_data,
+    mock_import_data,
+    mock_reconfigure_data,
+    mock_set_data,
+    mock_set_item_data,
+    mock_toggle_item_data,
+)
 
 
 class TestFirewallAlias(unittest.TestCase):
