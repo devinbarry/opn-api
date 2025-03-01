@@ -36,9 +36,9 @@ dependencies = [
 dev = ["pytest", "ruff"]
 
 [project.urls]
-homepage = "https://github.com/andeman/opnsense_cli"
-repository = "https://github.com/andeman/opnsense_cli"
-documentation = "https://github.com/andeman/opnsense_cli"
+homepage = "https://github.com/devinbarry/opn-api"
+repository = "https://github.com/devinbarry/opn-api"
+documentation = "https://github.com/devinbarry/opn-api"
 
 [tool.ruff]
 line-length = 120
