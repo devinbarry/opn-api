@@ -24,7 +24,7 @@ pip install opn-api
 Alternatively, if you want to install from source:
 
 ```sh
-git clone https://github.com/your-repo/opn-api.git
+git clone https://github.com/devinbarry/opn-api.git
 cd opn-api
 pip install .
 ```
