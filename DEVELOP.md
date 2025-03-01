@@ -27,8 +27,11 @@ Notes for setting up development systems for the OPN API project.
 
 1. Update version string in __init__.py
 2. Push to master and package will be built.
+3. Package is pushed to test pypi too
 
-## Release to pypi.org
+## Release to Production pypi.org
+
+The build script checks for a matching git tag to ensure release to production.
 
 3. `git tag -a v0.4.3 -m "Release v0.4.3"`
-4. `git push origin v0.4.3` (or git push --tags)
+4. `git push origin master --tags`
