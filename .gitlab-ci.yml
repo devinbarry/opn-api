@@ -29,6 +29,9 @@ sync_to_github:
   image: alpine:latest
   needs:
     - test_opn_api
+  variables:
+    GIT_STRATEGY: clone    # Make sure we get a proper clone
+    GIT_CHECKOUT: "true"   # Ensure GitLab CI checks out the commit
   rules:
     - if: '$SKIP_SYNC == "true"'
       when: never
@@ -45,6 +48,9 @@ sync_to_github:
     - chmod 644 ~/.ssh/known_hosts
     - git config --global user.email "devinbarry@users.noreply.github.com"
     - git config --global user.name "Devin Barry"
+    # Print debugging information
+    - git branch -a
+    - git status
   script:
     - bash ./scripts/sync_github.sh
 
