@@ -15,13 +15,13 @@ log_error() {
 log_message "Starting GitHub sync"
 
 # Check for required environment variables
-if [ -z "$GITHUB_REPO_URL" ]; then
+if [ -z "$GITHUB_OPN_API_REPO_URL" ]; then
     log_error "GITHUB_REPO_URL is not set."
     exit 1
 fi
 
 log_message "Fetching from GitHub"
-git remote add github "$GITHUB_REPO_URL" || git remote set-url github "$GITHUB_REPO_URL"
+git remote add github "$GITHUB_OPN_API_REPO_URL" || git remote set-url github "$GITHUB_OPN_API_REPO_URL"
 git fetch github
 
 # Check if there are changes on GitHub that aren't in GitLab
