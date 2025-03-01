@@ -77,7 +77,7 @@ build_and_publish_internal:
         exit 1
       fi
     # Check if a tag exists for this version
-    - git fetch --tags
+    - git fetch --prune --prune-tags origin
     - export HAS_VERSION_TAG=$(git tag -l "v$PROJECT_VERSION" | wc -l)
     - echo "Has version tag? $HAS_VERSION_TAG"
     # Check if version already exists on internal PyPI
@@ -149,7 +149,7 @@ publish_to_prod_pypi:
     - apt-get update && apt-get install -y jq git
     - export PROJECT_VERSION=$(grep "__version__" src/opn_api/__init__.py | awk -F "[\"']" '{print $2}')
     # Check if a tag exists for this version
-    - git fetch --tags
+    - git fetch --prune --prune-tags origin
     - export HAS_VERSION_TAG=$(git tag -l "v$PROJECT_VERSION" | wc -l)
     - echo "Has version tag? $HAS_VERSION_TAG"
     - |
