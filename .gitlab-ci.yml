@@ -2,7 +2,7 @@ stages:
   - test
   - sync
   - build
-  - publish_prod
+  - publish
 
 test_opn_api:
   stage: test
@@ -10,7 +10,7 @@ test_opn_api:
   tags:
     - python
   rules:
-    - if: '$CI_COMMIT_REF_NAME == "master" || $CI_COMMIT_TAG'
+    - if: '$CI_PIPELINE_SOURCE == "push" && ($CI_COMMIT_REF_NAME == "master" || $CI_COMMIT_TAG)'
       when: on_success
   before_script:
     - python --version
@@ -21,7 +21,6 @@ test_opn_api:
     - pip install -e .
     # Run all tests
     - pytest
-
 
 # Push master branch to GitHub
 sync_to_github:
@@ -35,7 +34,7 @@ sync_to_github:
   rules:
     - if: '$SKIP_SYNC == "true"'
       when: never
-    - if: '$CI_COMMIT_REF_NAME == "master" || $CI_COMMIT_TAG'
+    - if: '$CI_PIPELINE_SOURCE == "push" && ($CI_COMMIT_REF_NAME == "master" || $CI_COMMIT_TAG)'
       when: on_success
     - when: never
   before_script:
@@ -54,21 +53,19 @@ sync_to_github:
   script:
     - bash ./scripts/sync_github.sh
 
-
-build_and_publish:
+build_and_publish_internal:
   image: python:3.12
   stage: build
   tags:
     - python
   rules:
-    # Build on master branch and tags
-    - if: '$CI_COMMIT_REF_NAME == "master" || $CI_COMMIT_TAG'
+    - if: '$CI_PIPELINE_SOURCE == "push" && ($CI_COMMIT_REF_NAME == "master" || $CI_COMMIT_TAG)'
       when: on_success
       exists:
         - src/opn_api/__init__.py
   before_script:
     - apt-get update && apt-get install -y jq
-    # Get the project version from PyPI
+    # Get the project version from internal PyPI
     - export PYPI_PROJECT_VERSION=$(curl $UNOBTAIN_INDEX_URL/opn-api/json | jq -r '.info.version')
     - echo "PyPI project version - $PYPI_PROJECT_VERSION"
     # Get the project version from the project source code
@@ -79,52 +76,102 @@ build_and_publish:
         echo "ERROR: PROJECT_VERSION is empty"
         exit 1
       fi
-    # We should build the project if the source version is different from the PyPI project version
-    - export SHOULD_BUILD=$([ "$PYPI_PROJECT_VERSION" == "$PROJECT_VERSION" ] && echo "false" || echo "true")
-    - echo "Should build - $SHOULD_BUILD"
-  script:
-    # Don't build if the project version is the same as the PyPI project version. We will get a conflict.
-    - |
-      if [ "$SHOULD_BUILD" != "true" ]; then
-        echo "Skipping build as SHOULD_BUILD is not true"
-        exit 0
-      fi
     - |
       if [[ -n "$CI_COMMIT_TAG" ]]; then
-        echo "Building on tag - $CI_COMMIT_TAG"
         # Check that the project version matches the commit tag
-        if [ "$CI_COMMIT_TAG" != "v$PROJECT_VERSION" ]; then exit 1; fi
-      else
-        echo "Building on branch - $CI_COMMIT_REF_NAME"
+        if [ "$CI_COMMIT_TAG" != "v$PROJECT_VERSION" ]; then
+          echo "ERROR: Tag $CI_COMMIT_TAG does not match project version v$PROJECT_VERSION"
+          exit 1
+        fi
       fi
+    # Check if version already exists on internal PyPI
+    - |
+      if [ "$PYPI_PROJECT_VERSION" == "$PROJECT_VERSION" ]; then
+        echo "Version $PROJECT_VERSION already exists on internal PyPI, skipping publish"
+        export SKIP_INTERNAL_PUBLISH="true"
+      else
+        export SKIP_INTERNAL_PUBLISH="false"
+      fi
+  script:
     - pip install hatch
     - hatch build
-    - hatch publish --repo $PYPI_REPO_URL --user $PYPI_REPO_USER --auth $PYPI_REPO_AUTH
+    - |
+      if [ "$SKIP_INTERNAL_PUBLISH" == "true" ]; then
+        echo "Skipping internal PyPI publish"
+      else
+        echo "Publishing to internal PyPI server"
+        hatch publish --repo $PYPI_REPO_URL --user $PYPI_REPO_USER --auth $PYPI_REPO_AUTH
+      fi
+  artifacts:
+    paths:
+      - dist/
+    expire_in: 1 week
 
 publish_to_test_pypi:
-  stage: build
-  image: python:3.12
-  rules:
-    - if: '$CI_COMMIT_REF_NAME == "master" || $CI_COMMIT_TAG'
-      when: on_success
-  script:
-    - export TWINE_USERNAME="__token__"
-    - export TWINE_PASSWORD="$PYPI_TEST_API_TOKEN"
-    - pip install hatch twine
-    - hatch build
-    - twine upload --verbose --non-interactive -r testpypi dist/*
-
-
-publish_to_prod_pypi:
-  stage: publish_prod
+  stage: publish
   image: python:3.12
   needs:
+    - build_and_publish_internal
+  rules:
+    - if: '$CI_PIPELINE_SOURCE == "push" && $CI_COMMIT_REF_NAME == "master"'
+      when: on_success
+    - if: '$CI_PIPELINE_SOURCE == "push" && $CI_COMMIT_TAG'
+      when: on_success
+  before_script:
+    - apt-get update && apt-get install -y jq
+    - export PROJECT_VERSION=$(grep "__version__" src/opn_api/__init__.py | awk -F "[\"']" '{print $2}')
+    # Get the project version from TestPyPI
+    - export TESTPYPI_PROJECT_VERSION=$(curl https://test.pypi.org/pypi/opn-api/json 2>/dev/null | jq -r '.info.version' || echo "not-found")
+    - echo "TestPyPI project version - $TESTPYPI_PROJECT_VERSION"
+    - echo "Project version - $PROJECT_VERSION"
+    - |
+      if [ "$TESTPYPI_PROJECT_VERSION" == "$PROJECT_VERSION" ]; then
+        echo "Version $PROJECT_VERSION already exists on TestPyPI, skipping upload"
+        export SKIP_TESTPYPI_UPLOAD="true"
+      else
+        export SKIP_TESTPYPI_UPLOAD="false"
+      fi
+  script:
+    - |
+      if [ "$SKIP_TESTPYPI_UPLOAD" == "true" ]; then
+        echo "Skipping TestPyPI upload"
+        exit 0
+      fi
+    - export TWINE_USERNAME="__token__"
+    - export TWINE_PASSWORD="$PYPI_TEST_API_TOKEN"
+    - pip install twine
+    - twine upload --verbose --non-interactive -r testpypi dist/*
+
+publish_to_prod_pypi:
+  stage: publish
+  image: python:3.12
+  needs:
+    - build_and_publish_internal
     - publish_to_test_pypi
   rules:
-    - if: '$CI_COMMIT_TAG'  # Only run this job on tag builds
+    - if: '$CI_PIPELINE_SOURCE == "push" && $CI_COMMIT_TAG'
+      when: on_success
+  before_script:
+    - apt-get update && apt-get install -y jq
+    - export PROJECT_VERSION=$(grep "__version__" src/opn_api/__init__.py | awk -F "[\"']" '{print $2}')
+    # Get the project version from PyPI
+    - export PYPI_PROJECT_VERSION=$(curl https://pypi.org/pypi/opn-api/json 2>/dev/null | jq -r '.info.version' || echo "not-found")
+    - echo "PyPI project version - $PYPI_PROJECT_VERSION"
+    - echo "Project version - $PROJECT_VERSION"
+    - |
+      if [ "$PYPI_PROJECT_VERSION" == "$PROJECT_VERSION" ]; then
+        echo "Version $PROJECT_VERSION already exists on PyPI, skipping upload"
+        export SKIP_PYPI_UPLOAD="true"
+      else
+        export SKIP_PYPI_UPLOAD="false"
+      fi
   script:
+    - |
+      if [ "$SKIP_PYPI_UPLOAD" == "true" ]; then
+        echo "Skipping PyPI upload"
+        exit 0
+      fi
     - export TWINE_USERNAME="__token__"
     - export TWINE_PASSWORD="$PYPI_PROD_API_TOKEN"
-    - pip install hatch twine
-    - hatch build
+    - pip install twine
     - twine upload --non-interactive -r pypi dist/*
