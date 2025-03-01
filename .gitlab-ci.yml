@@ -112,7 +112,7 @@ publish_to_test_pypi:
     - export TWINE_PASSWORD="$PYPI_TEST_API_TOKEN"
     - pip install hatch twine
     - hatch build
-    - twine upload --non-interactive -r testpypi dist/*
+    - twine upload --verbose --non-interactive -r testpypi dist/*
 
 
 publish_to_prod_pypi:
