@@ -101,13 +101,12 @@ print(new_rule)
 ### Example: Fetching DHCP Leases
 
 ```python
-# TODO This code doesn't exist yet
-from opn_api.api.core.dhcp import DHCP
+from opn_api.client import OPNFirewallClient
 
-dhcp_client = DHCP(client)
+fw = OPNFirewallClient(client)
 
 # Fetch DHCP leases
-leases = dhcp_client.get_leases()
+leases = fw.dhcp.list_leases()
 print(leases)
 ```
 

@@ -26,7 +26,7 @@ Notes for setting up development systems for the OPN API project.
 ## Bump version & build package on local PyPI server
 
 1. Update version string in __init__.py
-2. Push to master and package will be built.
+2. Push to master and the package will be built.
 3. Package is pushed to test pypi too
 
 ## Release to Production pypi.org
