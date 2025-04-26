@@ -33,7 +33,7 @@ dependencies = [
 ]
 
 [project.optional-dependencies]
-dev = ["pytest", "ruff"]
+dev = ["pytest", "ruff", "python-dotenv"]
 
 [project.urls]
 homepage = "https://github.com/devinbarry/opn-api"

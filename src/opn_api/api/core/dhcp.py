@@ -4,6 +4,7 @@ from opn_api.api.base import ApiBase
 class Leases4(ApiBase):
     """
     DHCP Leases4Controller - DO NOT USE
+    This controller is documented, but endpoints are not implemented in the API.
     """
 
     MODULE = "dhcp"
