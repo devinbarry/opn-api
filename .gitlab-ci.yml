@@ -79,7 +79,6 @@ build_and_publish_internal:
         exit 1
       fi
     # Check if a tag exists for this version
-    - git fetch --prune --prune-tags origin
     - export HAS_VERSION_TAG=$(git tag -l "v$PROJECT_VERSION" | wc -l)
     - echo "Has version tag? $HAS_VERSION_TAG"
     # Check if version already exists on internal PyPI
