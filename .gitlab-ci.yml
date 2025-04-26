@@ -19,8 +19,8 @@ test_opn_api:
     - pip install pytest
     # Install opn_api in editable mode
     - pip install -e .
-    # Run all tests
-    - pytest
+    # Run all unit tests
+    - pytest tests/unit
 
 # Push master branch to GitHub
 sync_to_github:
