@@ -56,6 +56,8 @@ sync_to_github:
 build_and_publish_internal:
   image: python:3.12
   stage: build
+  needs:
+    - test_opn_api
   tags:
     - python
   rules:
