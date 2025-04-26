@@ -30,6 +30,7 @@ classifiers = [
 dependencies = [
     "requests",
     "pydantic",
+    "arrow",
 ]
 
 [project.optional-dependencies]

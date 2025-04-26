@@ -2,9 +2,9 @@ import os
 import pytest
 from dotenv import load_dotenv
 from opn_api.api.client import OPNsenseClientConfig, OPNAPIClient
-from opn_api.api.core.dhcp_v4 import Leases as DhcpV4Leases
+from opn_api.client import OPNFirewallClient
 
-# Load environment variables from .env file
+
 load_dotenv()
 
 # Check if required environment variables are set
@@ -29,7 +29,7 @@ def opn_api_client():
         api_secret=API_SECRET,
         base_url=BASE_URL,
         ssl_verify_cert=SSL_VERIFY,
-        timeout=10, # Reduced timeout for tests
+        timeout=10,
     )
     client = OPNAPIClient(config)
     return client
@@ -42,11 +42,8 @@ def test_dhcp_v4_search_lease(opn_api_client):
     Prints the raw response for inspection.
     """
     print("\nTesting DHCPv4 Leases Controller (module: dhcpv4, controller: leases)...")
-    dhcp_v4_leases_api = DhcpV4Leases(opn_api_client)
-    try:
-        response = dhcp_v4_leases_api.search_lease()
-        print("Response from dhcpv4/leases/searchLease:")
-        print(response)
-        assert isinstance(response, dict) # Basic check that we got a dict back
-    except Exception as e:
-        pytest.fail(f"API call failed: {e}")
+    dhcp_client = OPNFirewallClient(opn_api_client)
+    response = dhcp_client.dhcp.list_leases()
+    for lease in response.rows:
+        print(lease)
+

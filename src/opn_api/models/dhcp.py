@@ -1,6 +1,9 @@
+import arrow
+from dateutil import tz
 from enum import Enum
-from typing import Optional
-from pydantic import BaseModel, Field, IPvAnyAddress
+from datetime import datetime
+from pydantic import BaseModel, Field, IPvAnyAddress, field_validator
+
 
 class DhcpLeaseType(str, Enum):
     """DHCP Lease Type Enum"""
@@ -15,25 +18,29 @@ class DhcpLeaseStatus(str, Enum):
 class DhcpLease(BaseModel):
     """Pydantic model for a single DHCP lease entry."""
     address: IPvAnyAddress
-    starts: str  # Keeping as string due to potential empty value for static
-    ends: str    # Keeping as string due to potential empty value for static
-    cltt: Optional[int] = None # Client last transaction time (epoch)
-    binding: Optional[str] = None
-    uid: Optional[str] = None
-    client_hostname: Optional[str] = Field(None, alias="client-hostname")
+    starts: datetime | None
+    ends: datetime | None
+    cltt: int | None = None # Client last transaction time (epoch)
+    binding: str | None = None
+    uid: str | None = None
+    client_hostname: str | None = Field(None, alias="client-hostname")
     type: DhcpLeaseType
     status: DhcpLeaseStatus
     descr: str
-    mac: str # Could add validator for MAC format if needed: Field(..., pattern=r"^[0-9A-Fa-f]{2}(:[0-9A-Fa-f]{2}){5}$")
+    mac: str
     hostname: str # Resolved hostname (may be empty)
     state: str # Internal lease state
     man: str # Manufacturer (may be empty)
     interface: str = Field(..., alias="if")
     interface_description: str = Field(..., alias="if_descr")
 
-    class Config:
-        allow_population_by_field_name = True # Allows using 'if' and 'if_descr' directly if needed
-        use_enum_values = True # Ensure enum values are used when exporting
+    @field_validator("starts", "ends", mode='before')
+    @classmethod
+    def parse_datetime(cls, value):
+        if value in (None, ""):
+            return None
+        return arrow.get(value, 'YYYY/MM/DD HH:mm:ss', tzinfo=tz.gettz('Europe/London')).datetime
+
 
 class DhcpLeaseResponse(BaseModel):
     """Pydantic model for the DHCP lease API response."""
@@ -42,6 +49,3 @@ class DhcpLeaseResponse(BaseModel):
     current: int
     rows: list[DhcpLease]
     interfaces: dict[str, str]
-
-    class Config:
-        allow_population_by_field_name = True
