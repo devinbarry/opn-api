@@ -1,6 +1,6 @@
 import unittest
 from unittest.mock import Mock
-from opn_api.client.firewall.filter_controller import FilterController
+from opn_api.client.controllers.filter_controller import FilterController
 from opn_api.models.firewall_models import (
     FirewallFilterRule,
     FirewallFilterRuleResponse,

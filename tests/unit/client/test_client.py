@@ -1,8 +1,8 @@
 import unittest
 from unittest.mock import Mock, patch
 from opn_api.client.client import OPNFirewallClient
-from opn_api.client.firewall.alias_controller import AliasController
-from opn_api.client.firewall.filter_controller import FilterController
+from opn_api.client.controllers.alias_controller import AliasController
+from opn_api.client.controllers.filter_controller import FilterController
 
 
 class TestOPNFirewallClient(unittest.TestCase):

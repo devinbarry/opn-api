@@ -1,5 +1,5 @@
-from .firewall.alias_controller import AliasController
-from .firewall.filter_controller import FilterController
+from .controllers.alias_controller import AliasController
+from .controllers.filter_controller import FilterController
 
 
 class OPNFirewallClient:

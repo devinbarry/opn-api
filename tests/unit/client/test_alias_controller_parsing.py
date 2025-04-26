@@ -2,7 +2,7 @@ import unittest
 from unittest.mock import Mock
 from pydantic import ValidationError
 from opn_api.models.firewall_alias import AliasType
-from opn_api.client.firewall import AliasController
+from opn_api.client.controllers import AliasController
 
 
 class TestAliasControllerParseMethod(unittest.TestCase):

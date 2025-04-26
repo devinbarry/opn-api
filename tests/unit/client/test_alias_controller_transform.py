@@ -7,7 +7,7 @@ from opn_api.models.firewall_alias import (
     FirewallAliasResponse,
 )
 from opn_api.exceptions import ParsingError
-from opn_api.client.firewall import AliasController
+from opn_api.client.controllers import AliasController
 
 
 class TestAliasControllerTransform(unittest.TestCase):
