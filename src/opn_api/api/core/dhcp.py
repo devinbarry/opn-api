@@ -3,7 +3,7 @@ from opn_api.api.base import ApiBase
 
 class Leases4(ApiBase):
     """
-    DHCP Leases4Controller
+    DHCP Leases4Controller - DO NOT USE
     """
 
     MODULE = "dhcp"
