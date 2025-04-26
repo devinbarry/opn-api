@@ -2,7 +2,7 @@ import unittest
 from unittest.mock import MagicMock
 from opn_api.api.core.firewall import FirewallAlias
 from opn_api.api.client import OPNAPIClient
-from tests.mocks.alias import (
+from tests.unit.mocks.alias import (
     mock_export_data,
     mock_get_detail_data,
     mock_get_item_data,
