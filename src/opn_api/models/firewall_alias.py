@@ -13,7 +13,9 @@ class AliasType(StrEnum):
     AUTH_GROUP = "auth_group"
     DYN_IPV6_HOST = "dynipv6host"
     INTERNAL = "internal"
+    INTERNAL_OLD = "internal (automatic)"
     EXTERNAL = "external"
+    EXTERNAL_OLD = "external (advanced)"
 
 
 class ProtocolType(StrEnum):
@@ -31,7 +33,7 @@ class FirewallAlias(BaseModel):
     enabled: bool = True
     update_freq: str = Field(default="", description="Update frequency for dynamic aliases")
     counters: str = ""
-    proto: ProtocolType | None = None
+    proto: ProtocolType | None = None   
     @field_validator('proto', mode='before')
     @classmethod
     def validate_proto(cls, v):
