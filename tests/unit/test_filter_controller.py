@@ -37,12 +37,32 @@ class TestFilterController(unittest.TestCase):
             enabled=True,
             log=False,
         )
-        expected_dict = rule.model_dump(exclude_unset=True)
+        expected_body = {
+            "rule": {
+                "sequence": "10",
+                "action": "pass",
+                "quick": "1",
+                "interface": "wan",
+                "direction": "in",
+                "ipprotocol": "inet",
+                "protocol": "TCP",
+                "source_net": "192.168.1.0/24",
+                "source_not": "0",
+                "source_port": "",
+                "destination_net": "10.0.0.0/24",
+                "destination_not": "0",
+                "destination_port": "80",
+                "gateway": "",
+                "description": "Allow HTTP traffic",
+                "enabled": "1",
+                "log": "0",
+            }
+        }
         self.filter_controller.ff.add_rule.return_value = {"result": "success"}
 
         response = self.filter_controller.add_rule(rule)
 
-        self.filter_controller.ff.add_rule.assert_called_once_with(body=expected_dict)
+        self.filter_controller.ff.add_rule.assert_called_once_with(body=expected_body)
         self.assertEqual(response, {"result": "success"})
 
     def test_delete_rule(self):
@@ -138,13 +158,113 @@ class TestFilterController(unittest.TestCase):
             enabled=False,
             log=True,
         )
-        expected_dict = rule.model_dump(exclude_unset=True)
+        expected_body = {
+            "rule": {
+                "sequence": "20",
+                "action": "block",
+                "quick": "0",
+                "interface": "lan",
+                "direction": "out",
+                "ipprotocol": "inet6",
+                "protocol": "UDP",
+                "source_net": "10.0.0.0/24",
+                "source_not": "1",
+                "source_port": "",
+                "destination_net": "192.168.2.0/24",
+                "destination_not": "1",
+                "destination_port": "53",
+                "gateway": "fe80::1",
+                "description": "Block DNS traffic",
+                "enabled": "0",
+                "log": "1",
+            }
+        }
         self.filter_controller.ff.set_rule.return_value = {"result": "updated"}
 
         response = self.filter_controller.set_rule("test_uuid", rule)
 
-        self.filter_controller.ff.set_rule.assert_called_once_with("test_uuid", body=expected_dict)
+        self.filter_controller.ff.set_rule.assert_called_once_with("test_uuid", body=expected_body)
         self.assertEqual(response, {"result": "updated"})
+
+    def test_prepare_rule_body(self):
+        """Test that _prepare_rule_body correctly formats rule data for API submission."""
+        rule = FirewallFilterRule(
+            sequence=10,
+            action=Action.PASS,
+            quick=True,
+            interface=["wan", "lan"],  # Multiple interfaces
+            direction=Direction.IN,
+            ipprotocol=IPProtocol.INET,
+            protocol=Protocol.TCP,
+            source_net="192.168.1.0/24",
+            source_not=False,
+            source_port="1024-65535",
+            destination_net="10.0.0.0/24",
+            destination_not=True,
+            destination_port="80",
+            gateway="192.168.1.1",
+            description="Test rule",
+            enabled=True,
+            log=False,
+        )
+
+        result = self.filter_controller._prepare_rule_body(rule)
+
+        # Verify structure
+        self.assertIn("rule", result)
+        rule_data = result["rule"]
+
+        # Verify all fields are properly formatted
+        self.assertEqual(rule_data["sequence"], "10")  # Int converted to string
+        self.assertEqual(rule_data["action"], "pass")  # Enum to value
+        self.assertEqual(rule_data["quick"], "1")  # Boolean to "1"
+        self.assertEqual(rule_data["interface"], "wan,lan")  # List to comma-separated
+        self.assertEqual(rule_data["direction"], "in")  # Enum to value
+        self.assertEqual(rule_data["ipprotocol"], "inet")  # Enum to value
+        self.assertEqual(rule_data["protocol"], "TCP")  # Enum to value
+        self.assertEqual(rule_data["source_net"], "192.168.1.0/24")
+        self.assertEqual(rule_data["source_not"], "0")  # Boolean False to "0"
+        self.assertEqual(rule_data["source_port"], "1024-65535")
+        self.assertEqual(rule_data["destination_net"], "10.0.0.0/24")
+        self.assertEqual(rule_data["destination_not"], "1")  # Boolean True to "1"
+        self.assertEqual(rule_data["destination_port"], "80")
+        self.assertEqual(rule_data["gateway"], "192.168.1.1")
+        self.assertEqual(rule_data["description"], "Test rule")
+        self.assertEqual(rule_data["enabled"], "1")  # Boolean to "1"
+        self.assertEqual(rule_data["log"], "0")  # Boolean False to "0"
+
+    def test_prepare_rule_body_with_none_values(self):
+        """Test that _prepare_rule_body handles None values correctly."""
+        rule = FirewallFilterRule(
+            sequence=5,
+            action=Action.BLOCK,
+            quick=False,
+            interface=["opt1"],
+            direction=Direction.OUT,
+            ipprotocol=IPProtocol.INET6,
+            protocol=Protocol.ANY,
+            source_net="any",
+            source_not=False,
+            source_port=None,  # None value
+            destination_net="any",
+            destination_not=False,
+            destination_port=None,  # None value
+            gateway=None,  # None value
+            description=None,  # None value
+            enabled=False,
+            log=True,
+        )
+
+        result = self.filter_controller._prepare_rule_body(rule)
+        rule_data = result["rule"]
+
+        # Verify None values are converted to empty strings
+        self.assertEqual(rule_data["source_port"], "")
+        self.assertEqual(rule_data["destination_port"], "")
+        self.assertEqual(rule_data["gateway"], "")
+        self.assertEqual(rule_data["description"], "")
+        self.assertEqual(rule_data["enabled"], "0")  # False
+        self.assertEqual(rule_data["log"], "1")  # True
 
     def test_toggle_rule_enable(self):
         # Initially disabled

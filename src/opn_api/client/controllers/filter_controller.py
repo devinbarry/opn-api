@@ -12,8 +12,8 @@ class FilterController:
         self.ff = FirewallFilter(client)
 
     def add_rule(self, rule: FirewallFilterRule) -> dict[str, Any]:
-        rule_dict = rule.model_dump(exclude_unset=True)
-        return self.ff.add_rule(body=rule_dict)
+        request_body = self._prepare_rule_body(rule)
+        return self.ff.add_rule(body=request_body)
 
     def delete_rule(self, uuid: str) -> dict[str, Any]:
         return self.ff.del_rule(uuid)
@@ -30,8 +30,8 @@ class FilterController:
         raise ValueError(f"No rule found with UUID: {uuid}")
 
     def set_rule(self, uuid: str, rule: FirewallFilterRule) -> dict[str, Any]:
-        rule_dict = rule.model_dump(exclude_unset=True)
-        return self.ff.set_rule(uuid, body=rule_dict)
+        request_body = self._prepare_rule_body(rule)
+        return self.ff.set_rule(uuid, body=request_body)
 
     def toggle_rule(self, uuid: str, enabled: Optional[bool] = None) -> dict[str, Any]:
         if enabled is None:
@@ -68,6 +68,43 @@ class FilterController:
             if all(rule.model_dump().get(key) == value for key, value in attributes.items())
         ]
         return matched_rules
+
+    @staticmethod
+    def _prepare_rule_body(rule: FirewallFilterRule) -> dict[str, Any]:
+        """
+        Prepares the firewall filter rule body for API submission.
+
+        Transforms the Pydantic model into the format expected by the OPNsense API:
+        - Wraps data in {"rule": {...}}
+        - Converts booleans to "1" or "0" strings
+        - Converts interface list to comma-separated string
+        - Converts enums to their string values
+        - Converts None to empty strings
+        """
+        # Convert interface list to comma-separated string
+        interface_str = ",".join(rule.interface) if rule.interface else ""
+
+        return {
+            "rule": {
+                "sequence": str(rule.sequence),
+                "action": rule.action.value,
+                "quick": str(int(rule.quick)),
+                "interface": interface_str,
+                "direction": rule.direction.value,
+                "ipprotocol": rule.ipprotocol.value,
+                "protocol": rule.protocol.value,
+                "source_net": rule.source_net or "",
+                "source_not": str(int(rule.source_not)),
+                "source_port": rule.source_port or "",
+                "destination_net": rule.destination_net or "",
+                "destination_not": str(int(rule.destination_not)),
+                "destination_port": rule.destination_port or "",
+                "gateway": rule.gateway or "",
+                "description": rule.description or "",
+                "enabled": str(int(rule.enabled)),
+                "log": str(int(rule.log)),
+            }
+        }
 
     @staticmethod
     def _transform_rule_response(rule_data: dict[str, Any]) -> dict[str, Any]:
