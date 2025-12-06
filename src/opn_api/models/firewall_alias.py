@@ -1,5 +1,5 @@
 from enum import StrEnum
-from pydantic import BaseModel, Field
+from pydantic import BaseModel, Field, field_validator
 
 
 class AliasType(StrEnum):
@@ -12,8 +12,10 @@ class AliasType(StrEnum):
     ASN = "asn"
     AUTH_GROUP = "auth_group"
     DYN_IPV6_HOST = "dynipv6host"
-    INTERNAL = "internal (automatic)"
-    EXTERNAL = "external (advanced)"
+    INTERNAL = "internal"
+    INTERNAL_OLD = "internal (automatic)"
+    EXTERNAL = "external"
+    EXTERNAL_OLD = "external (advanced)"
 
 
 class ProtocolType(StrEnum):
@@ -31,7 +33,13 @@ class FirewallAlias(BaseModel):
     enabled: bool = True
     update_freq: str = Field(default="", description="Update frequency for dynamic aliases")
     counters: str = ""
-    proto: ProtocolType | None = None
+    proto: ProtocolType | None = None   
+    @field_validator('proto', mode='before')
+    @classmethod
+    def validate_proto(cls, v):
+        if v == "" or v is None:
+            return None
+        return v    
 
 
 class FirewallAliasCreate(FirewallAlias):
