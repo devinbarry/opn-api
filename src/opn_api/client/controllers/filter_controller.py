@@ -108,23 +108,52 @@ class FilterController:
 
     @staticmethod
     def _transform_rule_response(rule_data: dict[str, Any]) -> dict[str, Any]:
+        """
+        Transforms rule data from get_rule endpoint to FirewallFilterRuleResponse format.
+
+        The get_rule endpoint returns structured data with dictionaries for select fields.
+        For example:
+            "action": {"block": {"selected": 1, "value": "Block"}, "pass": {...}}
+        We need to extract the selected value from these dicts.
+        """
         try:
+            # Helper function to extract selected value from dict fields
+            def extract_selected_value(field_data):
+                if isinstance(field_data, dict):
+                    # Find the selected item
+                    for key, value in field_data.items():
+                        if isinstance(value, dict) and value.get("selected") == 1:
+                            return key
+                    # If nothing selected, return first key
+                    return next(iter(field_data.keys())) if field_data else ""
+                return field_data or ""
+
+            # Extract interface - can be dict or string
+            interface_data = rule_data.get("interface", "")
+            if isinstance(interface_data, dict):
+                # Extract selected interfaces from dict
+                interfaces = [key for key, value in interface_data.items()
+                             if isinstance(value, dict) and value.get("selected") == 1]
+            else:
+                # Handle comma-separated string
+                interfaces = [iface.strip() for iface in str(interface_data).split(",") if iface.strip()]
+
             return {
                 "sequence": int(rule_data.get("sequence", 0)),
-                "action": rule_data.get("action"),
+                "action": extract_selected_value(rule_data.get("action")),
                 "quick": bool(int(rule_data.get("quick", 1))),
-                "interface": [iface.strip() for iface in rule_data.get("interface", "").split(",") if iface.strip()],
-                "direction": rule_data.get("direction"),
-                "ipprotocol": rule_data.get("ipprotocol"),
-                "protocol": rule_data.get("protocol"),
-                "source_net": rule_data.get("source_net"),
+                "interface": interfaces,
+                "direction": extract_selected_value(rule_data.get("direction")),
+                "ipprotocol": extract_selected_value(rule_data.get("ipprotocol")),
+                "protocol": extract_selected_value(rule_data.get("protocol")),
+                "source_net": rule_data.get("source_net", ""),
                 "source_not": bool(int(rule_data.get("source_not", 0))),
-                "source_port": rule_data.get("source_port"),
-                "destination_net": rule_data.get("destination_net"),
+                "source_port": rule_data.get("source_port", ""),
+                "destination_net": rule_data.get("destination_net", ""),
                 "destination_not": bool(int(rule_data.get("destination_not", 0))),
-                "destination_port": rule_data.get("destination_port"),
-                "gateway": rule_data.get("gateway"),
-                "description": rule_data.get("description"),
+                "destination_port": rule_data.get("destination_port", ""),
+                "gateway": extract_selected_value(rule_data.get("gateway")) if isinstance(rule_data.get("gateway"), dict) else rule_data.get("gateway", ""),
+                "description": rule_data.get("description", ""),
                 "enabled": bool(int(rule_data.get("enabled", 1))),
                 "log": bool(int(rule_data.get("log", 0))),
             }

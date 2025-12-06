@@ -72,15 +72,33 @@ class TestFilterController(unittest.TestCase):
         self.assertEqual(response, {"result": "deleted"})
 
     def test_get_rule_success(self):
+        # Mock response using actual OPNsense API format with dict structures
         mock_response = {
             "rule": {
                 "sequence": "10",
-                "action": "pass",
+                "action": {
+                    "pass": {"selected": 1, "value": "Pass"},
+                    "block": {"selected": 0, "value": "Block"},
+                    "reject": {"selected": 0, "value": "Reject"}
+                },
                 "quick": "1",
-                "interface": "wan, lan",
-                "direction": "in",
-                "ipprotocol": "inet",
-                "protocol": "TCP",
+                "interface": {
+                    "wan": {"selected": 1, "value": "WAN"},
+                    "lan": {"selected": 1, "value": "LAN"}
+                },
+                "direction": {
+                    "in": {"selected": 1, "value": "in"},
+                    "out": {"selected": 0, "value": "out"}
+                },
+                "ipprotocol": {
+                    "inet": {"selected": 1, "value": "IPv4"},
+                    "inet6": {"selected": 0, "value": "IPv6"}
+                },
+                "protocol": {
+                    "TCP": {"selected": 1, "value": "TCP"},
+                    "UDP": {"selected": 0, "value": "UDP"},
+                    "any": {"selected": 0, "value": "any"}
+                },
                 "source_net": "192.168.1.0/24",
                 "source_not": "0",
                 "source_port": "",
