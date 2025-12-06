@@ -72,6 +72,14 @@ class TestFilterController(unittest.TestCase):
         self.assertEqual(response, {"result": "deleted"})
 
     def test_get_rule_success(self):
+        """
+        Test get_rule() with actual OPNsense get_rule endpoint format.
+
+        NOTE: The get_rule endpoint returns dict structures with selected values:
+        {"action": {"pass": {"selected": 1}, "block": {"selected": 0}}}
+
+        This is different from search_rule which returns simple strings.
+        """
         # Mock response using actual OPNsense API format with dict structures
         mock_response = {
             "rule": {
@@ -365,6 +373,14 @@ class TestFilterController(unittest.TestCase):
         self.assertEqual(response, {"result": "rollback_cancelled"})
 
     def test_list_rules(self):
+        """
+        Test list_rules() with actual OPNsense search_rule endpoint format.
+
+        NOTE: The search_rule endpoint returns simple string values:
+        {"action": "pass", "interface": "wan, lan"}
+
+        This is different from get_rule which returns dict structures.
+        """
         mock_response = {
             "rows": [
                 {
@@ -577,6 +593,108 @@ class TestFilterController(unittest.TestCase):
 
         matched = self.filter_controller.match_rule_by_attributes(action=Action.BLOCK)
         self.assertEqual(matched, [])
+
+    def test_transform_rule_response_with_dict_format(self):
+        """
+        Test _transform_rule_response() directly with get_rule endpoint dict format.
+
+        This test validates that we correctly extract selected values from the
+        complex dict structures returned by the get_rule API endpoint.
+        """
+        # Actual get_rule API response format
+        rule_data = {
+            "sequence": "15",
+            "action": {
+                "block": {"selected": 1, "value": "Block"},
+                "pass": {"selected": 0, "value": "Pass"},
+                "reject": {"selected": 0, "value": "Reject"}
+            },
+            "quick": "0",
+            "interface": {
+                "lan": {"selected": 1, "value": "LAN"},
+                "wan": {"selected": 1, "value": "WAN"},
+                "opt1": {"selected": 0, "value": "OPT1"}
+            },
+            "direction": {
+                "in": {"selected": 0, "value": "in"},
+                "out": {"selected": 1, "value": "out"}
+            },
+            "ipprotocol": {
+                "inet": {"selected": 0, "value": "IPv4"},
+                "inet6": {"selected": 1, "value": "IPv6"}
+            },
+            "protocol": {
+                "TCP": {"selected": 1, "value": "TCP"},
+                "UDP": {"selected": 0, "value": "UDP"}
+            },
+            "source_net": "2001:db8::/32",
+            "source_not": "1",
+            "source_port": "1024-65535",
+            "destination_net": "2001:db8:1::/48",
+            "destination_not": "0",
+            "destination_port": "443",
+            "gateway": {
+                "default": {"selected": 0, "value": "Default"},
+                "fe80::1": {"selected": 1, "value": "fe80::1"}
+            },
+            "description": "Test rule with dict format",
+            "enabled": "1",
+            "log": "1",
+        }
+
+        result = self.filter_controller._transform_rule_response(rule_data)
+
+        # Verify selected values were correctly extracted
+        self.assertEqual(result["sequence"], 15)
+        self.assertEqual(result["action"], "block")  # block was selected
+        self.assertEqual(result["quick"], False)  # "0" -> False
+        self.assertIn("lan", result["interface"])  # Both lan and wan selected
+        self.assertIn("wan", result["interface"])
+        self.assertEqual(len(result["interface"]), 2)
+        self.assertEqual(result["direction"], "out")  # out was selected
+        self.assertEqual(result["ipprotocol"], "inet6")  # inet6 was selected
+        self.assertEqual(result["protocol"], "TCP")  # TCP was selected
+        self.assertEqual(result["source_net"], "2001:db8::/32")
+        self.assertEqual(result["source_not"], True)  # "1" -> True
+        self.assertEqual(result["source_port"], "1024-65535")
+        self.assertEqual(result["destination_net"], "2001:db8:1::/48")
+        self.assertEqual(result["destination_not"], False)  # "0" -> False
+        self.assertEqual(result["destination_port"], "443")
+        self.assertEqual(result["gateway"], "fe80::1")  # Selected from dict
+        self.assertEqual(result["description"], "Test rule with dict format")
+        self.assertEqual(result["enabled"], True)  # "1" -> True
+        self.assertEqual(result["log"], True)  # "1" -> True
+
+    def test_transform_rule_response_with_string_gateway(self):
+        """
+        Test _transform_rule_response() with simple string gateway (not dict).
+
+        Sometimes gateway is returned as a simple string rather than a dict.
+        """
+        rule_data = {
+            "sequence": "10",
+            "action": {"pass": {"selected": 1}},
+            "quick": "1",
+            "interface": {"lan": {"selected": 1}},
+            "direction": {"in": {"selected": 1}},
+            "ipprotocol": {"inet": {"selected": 1}},
+            "protocol": {"TCP": {"selected": 1}},
+            "source_net": "192.168.1.0/24",
+            "source_not": "0",
+            "source_port": "",
+            "destination_net": "10.0.0.0/24",
+            "destination_not": "0",
+            "destination_port": "80",
+            "gateway": "192.168.1.1",  # Simple string, not dict
+            "description": "Test",
+            "enabled": "1",
+            "log": "0",
+        }
+
+        result = self.filter_controller._transform_rule_response(rule_data)
+
+        # Verify gateway is handled as string
+        self.assertEqual(result["gateway"], "192.168.1.1")
 
     def test_match_rule_by_attributes_partial_match(self):
         mock_rules = [
