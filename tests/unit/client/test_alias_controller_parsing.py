@@ -27,6 +27,94 @@ class TestAliasControllerParseMethod(unittest.TestCase):
                 result = self.alias._parse_alias_search_item(alias_data)
                 self.assertEqual(result.type, expected_type)
 
+    def test_parse_system_alias_modern_format(self):
+        """
+        Test parsing system aliases in modern format (OPNsense >= 25.7).
+
+        Modern format returns literal values: "external", "internal"
+        """
+        # Test external system aliases (e.g., bogons, sshlockout)
+        external_test_cases = [
+            ("external", AliasType.EXTERNAL),
+            ("EXTERNAL", AliasType.EXTERNAL),
+        ]
+
+        for input_type, expected_type in external_test_cases:
+            with self.subTest(input_type=input_type, format="modern"):
+                alias_data = {
+                    "uuid": "bogons",
+                    "name": "bogons",
+                    "type": input_type,
+                    "enabled": "1",
+                    "description": "bogon networks",
+                }
+                result = self.alias._parse_alias_search_item(alias_data)
+                self.assertEqual(result.type, expected_type)
+                self.assertEqual(result.name, "bogons")
+
+        # Test internal system aliases (e.g., __lan_network, __wan_network)
+        internal_test_cases = [
+            ("internal", AliasType.INTERNAL),
+            ("INTERNAL", AliasType.INTERNAL),
+        ]
+
+        for input_type, expected_type in internal_test_cases:
+            with self.subTest(input_type=input_type, format="modern"):
+                alias_data = {
+                    "uuid": "__lan_network",
+                    "name": "__lan_network",
+                    "type": input_type,
+                    "enabled": "1",
+                    "description": "LAN network",
+                }
+                result = self.alias._parse_alias_search_item(alias_data)
+                self.assertEqual(result.type, expected_type)
+                self.assertEqual(result.name, "__lan_network")
+
+    def test_parse_system_alias_legacy_format(self):
+        """
+        Test parsing system aliases in legacy format (OPNsense < 25.7).
+
+        Legacy format returns display values: "External (advanced)", "Internal (automatic)"
+        """
+        # Test external system aliases (e.g., bogons, sshlockout)
+        external_test_cases = [
+            ("External (advanced)", AliasType.EXTERNAL_OLD),
+            ("external (advanced)", AliasType.EXTERNAL_OLD),
+        ]
+
+        for input_type, expected_type in external_test_cases:
+            with self.subTest(input_type=input_type, format="legacy"):
+                alias_data = {
+                    "uuid": "bogons",
+                    "name": "bogons",
+                    "type": input_type,
+                    "enabled": "1",
+                    "description": "bogon networks",
+                }
+                result = self.alias._parse_alias_search_item(alias_data)
+                self.assertEqual(result.type, expected_type)
+                self.assertEqual(result.name, "bogons")
+
+        # Test internal system aliases (e.g., __lan_network, __wan_network)
+        internal_test_cases = [
+            ("Internal (automatic)", AliasType.INTERNAL_OLD),
+            ("internal (automatic)", AliasType.INTERNAL_OLD),
+        ]
+
+        for input_type, expected_type in internal_test_cases:
+            with self.subTest(input_type=input_type, format="legacy"):
+                alias_data = {
+                    "uuid": "__lan_network",
+                    "name": "__lan_network",
+                    "type": input_type,
+                    "enabled": "1",
+                    "description": "LAN network",
+                }
+                result = self.alias._parse_alias_search_item(alias_data)
+                self.assertEqual(result.type, expected_type)
+                self.assertEqual(result.name, "__lan_network")
+
     def test_parse_alias_enabled_variations(self):
         # Test different enabled values
         test_cases = [
