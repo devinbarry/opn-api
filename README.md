@@ -5,7 +5,7 @@ A Python client for the OPNsense REST API.
 This library is based on [opn-cli](https://github.com/andreas-stuerz/opn-cli) (v1.7.0) by Andreas Stürz, with additional code from [python-opnsense](https://github.com/turnbros/python-opnsense) by Dylan Turnbull.
 It has been stripped down to focus solely on API implementation while maintaining an extensible structure for easy addition of new API functions.
 
-Tested against OPNsense versions 24 and 25.
+Tested against OPNsense versions 24 and 25. Fully supports OPNsense 25.7+ API format changes.
 
 ## Features
 - Supports OPNsense API calls.
